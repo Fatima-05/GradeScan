@@ -1,3 +1,8 @@
+/* Smooth scroll for the menu anchor links custom CSS */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Page-wide theme, custom CSS, overrides Bootstrap's default light colors */
 body {
   background-color: #0b1220;

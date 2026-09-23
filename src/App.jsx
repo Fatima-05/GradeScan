@@ -4,7 +4,7 @@ export default function App() {
       {/* NAVBAR: Bootstrap Navbar component*/}
       <nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">GradeScan</a>
+          <a className="navbar-brand" href="#home">GradeScan</a>
           {/* Toggler: Bootstrap collapsible menu*/}
           <button
             className="navbar-toggler"
@@ -17,18 +17,20 @@ export default function App() {
           </button>
           <div className="collapse navbar-collapse" id="navMenu">
             <ul className="navbar-nav ms-auto">
-              {/* Nav links: Bootstrap navbar-nav and nav-link utilities */}
-              <li className="nav-item"><a className="nav-link active" href="#">Home</a></li>
-              <li className="nav-item"><a className="nav-link" href="#">Features</a></li>
-              <li className="nav-item"><a className="nav-link" href="#">How it works</a></li>
-              <li className="nav-item"><a className="nav-link" href="#">Contact</a></li>
+              {/* Nav links: Bootstrap navbar-nav and nav-link utilities. href="#id" + matching section id = plain HTML anchors */}
+              <li className="nav-item"><a className="nav-link active" href="#home">Home</a></li>
+              <li className="nav-item"><a className="nav-link" href="#features">Features</a></li>
+              <li className="nav-item"><a className="nav-link" href="#how-it-works">How it works</a></li>
+              <li className="nav-item"><a className="nav-link" href="#about">About</a></li>
+              <li className="nav-item"><a className="nav-link" href="#faq">FAQ</a></li>
+              <li className="nav-item"><a className="nav-link" href="#contact">Contact</a></li>
             </ul>
           </div>
         </div>
       </nav>
 
-      {/* Hera: custom section; text styles use Bootstrap utilities (display-5, lead), background from index.css */}
-      <header className="hero text-center py-5">
+      {/* Hero: custom section; text styles use Bootstrap utilities (display-5, lead), background from index.css */}
+      <header id="home" className="hero text-center py-5">
         <div className="container">
           <h1 className="display-5 fw-bold">Grade scans in seconds</h1>
           <p className="lead">
@@ -41,7 +43,7 @@ export default function App() {
       </header>
 
       {/* Content Area 1 (Features): Bootstrap grid (row/col-md-4) + Card component */}
-      <section className="container py-5">
+      <section id="features" className="container py-5">
         <div className="row g-4">
           {/* Card: Bootstrap Card component */}
           <div className="col-md-4">
@@ -72,7 +74,7 @@ export default function App() {
       </section>
 
       {/* Content Area 2 (How it works): Bootstrap grid + typography utilities (display-6, text-muted) */}
-      <section className="container py-5 text-center">
+      <section id="how-it-works" className="container py-5 text-center">
         <div className="row g-4">
           <div className="col-md-4">
             <h2 className="display-6">1</h2>
@@ -92,8 +94,87 @@ export default function App() {
         </div>
       </section>
 
+      {/* Content Area 3 (About): Bootstrap grid (row/col-md-6) + Card component */}
+      <section id="about" className="container py-5">
+        <h2 className="text-center mb-4">Why GradeScan?</h2>
+        <div className="row align-items-center g-4">
+          <div className="col-md-6">
+            <p>
+              Built for teachers, not engineers. GradeScan saves hours of
+              manual marking and gives instant, accurate results for the whole
+              class.
+            </p>
+            <p>
+              It reads the answer key from a printed QR code, recognizes
+              student names with OCR, and grades each bubble sheet in one go.
+            </p>
+          </div>
+          <div className="col-md-6">
+            <div className="card">
+              <div className="card-body">
+                <h6 className="card-title">What it reads from a sheet</h6>
+                <ul className="mb-0">
+                  <li>QR answer key</li>
+                  <li>Student name and ID</li>
+                  <li>Two-part bubble grid</li>
+                  <li>Per-question results and CSV</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Content Area 4 (FAQ): Bootstrap grid (row / col-md-6) + Card component */}
+      <section id="faq" className="container py-5">
+        <h2 className="text-center mb-4">FAQ</h2>
+        <div className="row g-4">
+          <div className="col-md-6">
+            <div className="card h-100">
+              <div className="card-body">
+                <h5 className="card-title">Is it free?</h5>
+                <p className="card-text">Yes, it's free to use in your browser.</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card h-100">
+              <div className="card-body">
+                <h5 className="card-title">What scanners work?</h5>
+                <p className="card-text">
+                  Any camera, as long as all four corners of the
+                  sheet are visible.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card h-100">
+              <div className="card-body">
+                <h5 className="card-title">How does grading work?</h5>
+                <p className="card-text">
+                  The printed QR carries the answer key, OCR reads the
+                  student's name and ID, and the app compares the filled
+                  bubbles against the key.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card h-100">
+              <div className="card-body">
+                <h5 className="card-title">What if it misreads a name?</h5>
+                <p className="card-text">
+                  A review step lets you correct names and IDs before saving.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Content area 3 (CTA) : Bootstrap Card + text-bg-warning color helper */}
-      <section className="container py-5 text-center">
+      <section id="contact" className="container py-5 text-center">
         <div className="card text-bg-warning">
           <div className="card-body p-4">
             <h3 className="card-title">Ready to stop grading by hand?</h3>
@@ -105,7 +186,7 @@ export default function App() {
       {/* Footer — Bootstrap utilities only (bg-dark, text-center, py-4) */}
       <footer className="bg-dark text-center py-4 mt-auto">
         <p className="mb-1">GradeScan — OMR Sheet Grader</p>
-        <p className="small text-secondary mb-0">© 2026 · BSE-4A</p>
+        <p className="small text-secondary mb-0">© 2026 · FTZ</p>
       </footer>
     </>
   );
