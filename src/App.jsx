@@ -97,7 +97,7 @@ export default function App() {
         <div className="card text-bg-warning">
           <div className="card-body p-4">
             <h3 className="card-title">Ready to stop grading by hand?</h3>
-            <p className="card-text">Free, offline, and ready in your browser.</p>
+            <p className="card-text">Free, and ready in your browser.</p>
           </div>
         </div>
       </section>
