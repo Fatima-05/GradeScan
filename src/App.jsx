@@ -1,8 +1,8 @@
 export default function App() {
   return (
     <>
-      {/* NAVBAR: Bootstrap Navbar component*/}
-      <nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+      {/* Navbar: Bootstrap Navbar component*/}
+      <nav className="navbar navbar-expand-lg bg-dark sticky-top" data-bs-theme="dark">
         <div className="container-fluid">
           <a className="navbar-brand" href="#home">GradeScan</a>
           {/* Toggler: Bootstrap collapsible menu*/}
