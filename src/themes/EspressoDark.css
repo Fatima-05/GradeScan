@@ -1,37 +1,33 @@
-/* Smooth scroll for the menu anchor links custom CSS */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Page-wide theme, custom CSS, overrides Bootstrap's default light colors.
-   Light Grey base palette: Light Grey #ecf0f1 bg, Cream #f7f3e3 cards,
-   Espresso #2b2118 text, Ochre #a8763e accents, Rust #6f1a07 strong accents */
+/* Backup: Espresso Dark theme (previous look). Restore by copying over src/index.css.
+Page-wide theme, custom CSS, overrides Bootstrap's default light colors.
+Warm dark palette: Espresso #2b2118 bg, #3a2c20 cards, Cream #f7f3e3 text,
+Ochre #a8763e accents, Rust #6f1a07 strong accents, Light Grey #ecf0f1 muted */
 body {
-  background-color: #ecf0f1;
-  color: #2b2118;
+  background-color: #2b2118;
+  color: #f7f3e3;
 }
 
 /* Card override, custom, changes Bootstrap's .card colors */
 .card {
-  background-color: #f7f3e3;
-  border-color: #d6d0bb;
-  color: #2b2118;
+  background-color: #3a2c20;
+  border-color: #4d3b28;
+  color: #f7f3e3;
 }
 
-/* text-muted override, custom, keeps secondary text readable on the light background */
+/* text-muted override, custom, keeps secondary text readable on the dark background */
 .text-muted {
-  color: #7d735e !important;
+  color: #ecf0f1 !important;
 }
 
-/* text-secondary override, custom, footer line on the dark footer */
+/* text-secondary override, custom, footer line on the dark background */
 .text-secondary {
-  color: #b9b29c !important;
+  color: #ecf0f1 !important;
 }
 
 /* Hero background,  custom section style from index.css */
 .hero {
-  background-color: #ecf0f1;
-  border-bottom: 1px solid #d6d0bb;
+  background-color: #2b2118;
+  border-bottom: 1px solid #4d3b28;
 }
 
 /* Auth brand panel: solid rust, no gradient */
@@ -55,38 +51,33 @@ body {
 
 /* Admin sidebar links */
 .sidebar .nav-link {
-  color: #f7f3e3;
+  color: #ecf0f1;
   border-radius: 8px;
 }
 .sidebar .nav-link:hover {
-  background-color: #6f1a07;
+  background-color: #3a2c20;
   color: #f7f3e3;
 }
 .sidebar .nav-link.active {
   background-color: #a8763e;
-  color: #2b2118;
-}
-
-/* Sidebar brand + footer text stay light because those panels use bg-dark */
-.sidebar .navbar-brand {
-  color: #f7f3e3;
+  color: #1f1710;
 }
 
 /* Accent active pill (login role tabs) */
 .nav-pills .nav-link {
-  color: #2b2118;
+  color: #f7f3e3;
 }
 .nav-pills .nav-link:hover {
   color: #a8763e;
 }
 .nav-pills .nav-link.active {
   background-color: #a8763e;
-  color: #2b2118;
+  color: #1f1710;
 }
 
-/* Form fields, custom: one shade lighter than the cream cards */
+/* Form fields, custom: cream fill for contrast against the dark cards */
 .form-control {
-  background-color: #fbf9f1;
+  background-color: #f7f3e3;
   border-color: #d8ceb2;
   color: #2b2118;
 }
@@ -95,31 +86,23 @@ body {
   opacity: 1;
 }
 
-/* Keep the light fill on autofilled email/password fields (browser overrides it) */
-.form-control:-webkit-autofill,
-.form-control:-webkit-autofill:hover,
-.form-control:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px #fbf9f1 inset;
-  -webkit-text-fill-color: #2b2118;
-}
-
 /* Accent focus ring on Bootstrap inputs */
 .form-control:focus {
   border-color: #a8763e;
-  box-shadow: 0 0 0 0.2rem rgba(168, 118, 62, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(168, 118, 62, 0.2);
 }
 
-/* Form select (dropdowns like "Send to everyone"), same lighter fill */
+/* Form select (dropdowns like "Send to everyone"), cream fill like the inputs */
 .form-select {
-  background-color: #fbf9f1;
+  background-color: #f7f3e3;
   border-color: #d8ceb2;
   color: #2b2118;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%232b2118' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
 }
 .form-select:focus {
-  background-color: #fbf9f1;
+  background-color: #f7f3e3;
   border-color: #a8763e;
-  box-shadow: 0 0 0 0.2rem rgba(168, 118, 62, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(168, 118, 62, 0.2);
 }
 
 /* List group (classes & subjects), cream fill instead of grey */
@@ -129,27 +112,23 @@ body {
 .list-group-item.list-group-item-dark {
   background-color: #f7f3e3;
   color: #2b2118;
-  border-color: #e0d9c2;
+  border-color: #e5ddc4;
 }
 .list-group-item.list-group-item-dark:hover {
-  background-color: #f0ead6;
+  background-color: #ece5cf;
 }
 .list-group .text-muted {
-  color: #8a7d63 !important;
+  color: #9c8a68 !important;
 }
 
-/* Warm badges (rust) instead of Bootstrap grey */
+/* Warm badges instead of Bootstrap grey */
 .bg-secondary {
-  background-color: #6f1a07 !important;
+  background-color: #4d3b28 !important;
 }
 
-/* Dark panels (navbar, sidebar, footer) repainted to Espresso,
-   and the plain footer keeps its text readable on it */
+/* Dark navbar/footer, repainted to match the espresso background */
 .bg-dark {
-  background-color: #2b2118 !important;
-}
-footer.bg-dark {
-  color: #f7f3e3;
+  background-color: #211a12 !important;
 }
 
 /* Warning utilities repainted to the palette accents:
@@ -157,13 +136,13 @@ footer.bg-dark {
 .btn-warning {
   background-color: #a8763e;
   border-color: #a8763e;
-  color: #2b2118;
+  color: #1f1710;
 }
 .btn-warning:hover,
 .btn-warning:focus {
   background-color: #94662e;
   border-color: #94662e;
-  color: #2b2118;
+  color: #1f1710;
 }
 .btn-outline-warning {
   color: #a8763e;
@@ -172,7 +151,7 @@ footer.bg-dark {
 .btn-outline-warning:hover {
   background-color: #a8763e;
   border-color: #a8763e;
-  color: #2b2118;
+  color: #1f1710;
 }
 .text-warning {
   color: #a8763e !important;
@@ -180,18 +159,4 @@ footer.bg-dark {
 .text-bg-warning {
   background-color: #6f1a07 !important;
   color: #f7f3e3 !important;
-}
-
-/* Success alerts repainted to the palette (cream card + ochre border) */
-.alert-success {
-  background-color: #f7f3e3;
-  border-color: #a8763e;
-  color: #2b2118;
-}
-
-/* Error alerts repainted with the rust accent instead of Bootstrap red */
-.alert-danger {
-  background-color: #f3e0da;
-  border-color: #6f1a07;
-  color: #6f1a07;
 }
