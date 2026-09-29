@@ -10,6 +10,7 @@ import "./index.css";
 import Landing from "./components/Landing.jsx";
 import Auth from "./components/Auth.jsx";
 import AdminDashboard from "./components/AdminDashboard.jsx";
+import StudentDashboard from "./components/StudentDashboard.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -17,5 +18,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     {/* <Landing /> */}
     {/* <Auth /> */}
     {/* <AdminDashboard /> */}
+    <StudentDashboard />
   </React.StrictMode>
 );
