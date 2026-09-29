@@ -1,9 +1,4 @@
 /* Announcements: compose box + static list (DB later). Post/delete are visual only. */
-const announcements = [
-  { text: "Midterm schedule is now live.", date: "25 Sep 2026", audience: "Everyone" },
-  { text: "GradeScan maintenance Sunday 2 AM.", date: "22 Sep 2026", audience: "Teachers" },
-];
-
 export default function Announcements() {
   return (
     <>
@@ -24,21 +19,34 @@ export default function Announcements() {
       </div>
       {/* Past announcements: Bootstrap grid + Card component */}
       <div className="row g-4">
-        {announcements.map((a, i) => (
-          <div className="col-md-6" key={i}>
-            <div className="card h-100">
-              <div className="card-body">
-                <div className="d-flex justify-content-between">
-                  <h6 className="card-title">{a.text}</h6>
-                  <a href="#del" className="text-muted">delete</a>
-                </div>
-                <small className="text-muted">
-                  {a.date} · <span className="badge bg-secondary">{a.audience}</span>
-                </small>
+        {/* Announcement 1 */}
+        <div className="col-md-6">
+          <div className="card h-100">
+            <div className="card-body">
+              <div className="d-flex justify-content-between">
+                <h6 className="card-title">Midterm schedule is now live.</h6>
+                <a href="#del" className="text-muted">delete</a>
               </div>
+              <small className="text-muted">
+                25 Sep 2026 · <span className="badge bg-secondary">Everyone</span>
+              </small>
             </div>
           </div>
-        ))}
+        </div>
+        {/* Announcement 2 */}
+        <div className="col-md-6">
+          <div className="card h-100">
+            <div className="card-body">
+              <div className="d-flex justify-content-between">
+                <h6 className="card-title">GradeScan maintenance Sunday 2 AM.</h6>
+                <a href="#del" className="text-muted">delete</a>
+              </div>
+              <small className="text-muted">
+                22 Sep 2026 · <span className="badge bg-secondary">Teachers</span>
+              </small>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

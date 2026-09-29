@@ -12,8 +12,6 @@ export default function Auth() {
   const [subject, setSubject] = useState("");
   const [password, setPassword] = useState("");
 
-  const roles = ["Faculty", "Admin", "Student"];
-
   // Fake submit: checks every visible field is filled first, then shows a
   // message — no routes, so pages are switched manually in main.jsx
   function handleSubmit(event) {
@@ -35,15 +33,28 @@ export default function Auth() {
       return;
     }
     setError(null);
-    setDone(
-      role === "Admin"
-        ? "Logged in as Admin. Switch to the dashboard in main.jsx."
-        : mode === "login"
-          ? "Logged in as " + role + ". The dashboard comes in a later phase."
-          : role === "Faculty"
-            ? "Signup sent! Your account is waiting for admin approval."
-            : "Signup sent! Check your registration number and log in."
-    );
+    if (role === "Admin") {
+      setDone("Logged in as Admin. Switch to the dashboard in main.jsx.");
+    } else if (mode === "login") {
+      setDone("Logged in as " + role + ". The dashboard comes in a later phase.");
+    } else if (role === "Faculty") {
+      setDone("Signup sent! Your account is waiting for admin approval.");
+    } else {
+      setDone("Signup sent! Check your registration number and log in.");
+    }
+  }
+
+  // Label shown on the submit button changes with role and mode
+  function submitLabel() {
+    if (role === "Admin") { return "Log in as Admin"; }
+    if (mode === "login") { return "Log in"; }
+    return "Create account";
+  }
+
+  function switchRole(nextRole) {
+    setRole(nextRole);
+    setDone(null);
+    setError(null);
   }
 
   return (
@@ -72,17 +83,36 @@ export default function Auth() {
 
           {/* Role tabs: Bootstrap nav-pills */}
           <ul className="nav nav-pills justify-content-center mb-4">
-            {roles.map((r) => (
-              <li className="nav-item" key={r}>
-                <button
-                  type="button"
-                  className={"nav-link " + (role === r ? "active" : "")}
-                  onClick={() => { setRole(r); setDone(null); setError(null); }}
-                >
-                  {r}
-                </button>
-              </li>
-            ))}
+            {/* Faculty */}
+            <li className="nav-item">
+              <button
+                type="button"
+                className={"nav-link " + (role === "Faculty" ? "active" : "")}
+                onClick={() => switchRole("Faculty")}
+              >
+                Faculty
+              </button>
+            </li>
+            {/* Admin */}
+            <li className="nav-item">
+              <button
+                type="button"
+                className={"nav-link " + (role === "Admin" ? "active" : "")}
+                onClick={() => switchRole("Admin")}
+              >
+                Admin
+              </button>
+            </li>
+            {/* Student */}
+            <li className="nav-item">
+              <button
+                type="button"
+                className={"nav-link " + (role === "Student" ? "active" : "")}
+                onClick={() => switchRole("Student")}
+              >
+                Student
+              </button>
+            </li>
           </ul>
 
           {done && !error ? (
@@ -97,16 +127,22 @@ export default function Auth() {
                 {/* Login/Sign up toggle: Admin has no signup */}
                 {role !== "Admin" && (
                   <div className="btn-group w-100 mb-4">
-                    {["login", "signup"].map((m) => (
-                      <button
-                        key={m}
-                        type="button"
-                        className={"btn " + (mode === m ? "btn-warning" : "btn-outline-warning")}
-                        onClick={() => { setMode(m); setError(null); }}
-                      >
-                        {m === "login" ? "Login" : "Sign up"}
-                      </button>
-                    ))}
+                    {/* Login button */}
+                    <button
+                      type="button"
+                      className={"btn " + (mode === "login" ? "btn-warning" : "btn-outline-warning")}
+                      onClick={() => { setMode("login"); setError(null); }}
+                    >
+                      Login
+                    </button>
+                    {/* Sign up button */}
+                    <button
+                      type="button"
+                      className={"btn " + (mode === "signup" ? "btn-warning" : "btn-outline-warning")}
+                      onClick={() => { setMode("signup"); setError(null); }}
+                    >
+                      Sign up
+                    </button>
                   </div>
                 )}
 
@@ -153,9 +189,7 @@ export default function Auth() {
                   )}
 
                   {/* Button: Bootstrap Button component*/}
-                  <button type="submit" className="btn btn-warning w-100">
-                    {role === "Admin" ? "Log in as Admin" : mode === "login" ? "Log in" : "Create account"}
-                  </button>
+                  <button type="submit" className="btn btn-warning w-100">{submitLabel()}</button>
                 </form>
               </div>
             </div>
