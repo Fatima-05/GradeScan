@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 export default function Landing() {
   return (
     <>
@@ -26,8 +24,8 @@ export default function Landing() {
               <li className="nav-item"><a className="nav-link" href="#about">About</a></li>
               <li className="nav-item"><a className="nav-link" href="#faq">FAQ</a></li>
               <li className="nav-item"><a className="nav-link" href="#contact">Contact</a></li>
-              {/* Nav link: react-router Link takes the user to the login page */}
-              <li className="nav-item"><Link className="nav-link" to="/login">Login</Link></li>
+              {/* Nav link: placeholder — switch the page in main.jsx */}
+              <li className="nav-item"><a className="nav-link" href="#login">Login</a></li>
             </ul>
           </div>
         </div>
@@ -41,8 +39,8 @@ export default function Landing() {
             Reads the answer key from a QR, recognizes student names with OCR,
             and grades MCQ bubble sheets right in your browser.
           </p>
-          {/* Button: react-router Link styled with Bootstrap Button classes */}
-          <Link to="/login" className="btn btn-warning btn-lg">Get started</Link>
+          {/* Button: Bootstrap Button classes; placeholder — switch the page in main.jsx */}
+          <a href="#login" className="btn btn-warning btn-lg">Get started</a>
         </div>
       </header>
 

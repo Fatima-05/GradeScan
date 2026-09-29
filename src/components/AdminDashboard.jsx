@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import Overview from "./admin/Overview.jsx";
 import PendingTeachers from "./admin/PendingTeachers.jsx";
 import Announcements from "./admin/Announcements.jsx";
@@ -40,9 +39,9 @@ export default function AdminDashboard() {
             </li>
           ))}
         </ul>
-        {/* Log out: react-router Link, pinned to the bottom with mt-auto */}
+        {/* Log out: placeholder — switch the page in main.jsx */}
         <div className="mt-auto">
-          <Link to="/" className="nav-link text-white-50">Log out</Link>
+          <a href="#/" className="nav-link text-white-50">Log out</a>
         </div>
       </aside>
 

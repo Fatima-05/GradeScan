@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
 
 /* Auth: professional split layout. Left brand panel, right form. Role via nav-pills, basic useState only. */
 export default function Auth() {
@@ -12,12 +11,11 @@ export default function Auth() {
   const [reg, setReg] = useState("");
   const [subject, setSubject] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
   const roles = ["Faculty", "Admin", "Student"];
 
-  // Fake submit: checks every visible field is filled first, then Admin → dashboard,
-  // others → message (their dashboards come later)
+  // Fake submit: checks every visible field is filled first, then shows a
+  // message — no routes, so pages are switched manually in main.jsx
   function handleSubmit(event) {
     event.preventDefault();
     if (!email.trim() || !password.trim()) {
@@ -37,17 +35,15 @@ export default function Auth() {
       return;
     }
     setError(null);
-    if (role === "Admin") {
-      navigate("/admin");
-    } else if (mode === "login") {
-      setDone("Logged in as " + role + ". The dashboard comes in a later phase.");
-    } else {
-      setDone(
-        role === "Faculty"
-          ? "Signup sent! Your account is waiting for admin approval."
-          : "Signup sent! Check your registration number and log in."
-      );
-    }
+    setDone(
+      role === "Admin"
+        ? "Logged in as Admin. Switch to the dashboard in main.jsx."
+        : mode === "login"
+          ? "Logged in as " + role + ". The dashboard comes in a later phase."
+          : role === "Faculty"
+            ? "Signup sent! Your account is waiting for admin approval."
+            : "Signup sent! Check your registration number and log in."
+    );
   }
 
   return (
@@ -69,8 +65,8 @@ export default function Auth() {
       {/* Form panel: fills the other half with a normal flex column */}
       <div className="flex-grow-1 d-flex align-items-center justify-content-center p-4">
         <div style={{ maxWidth: "460px", width: "100%" }}>
-          {/* Link: back to the landing page */}
-          <Link to="/" className="text-warning">← Back to home</Link>
+          {/* Link: placeholder — switch the page in main.jsx */}
+          <a href="#/" className="text-warning">← Back to home</a>
           <h2 className="mt-3 mb-1">Welcome!</h2>
           <p className="text-muted mb-4">Log in or create your account.</p>
 
