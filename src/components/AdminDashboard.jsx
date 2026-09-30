@@ -1,14 +1,13 @@
-import { useState } from "react";
 import Overview from "./admin/Overview.jsx";
 import PendingTeachers from "./admin/PendingTeachers.jsx";
 import Announcements from "./admin/Announcements.jsx";
 import ClassesSubjects from "./admin/ClassesSubjects.jsx";
 import GradingPolicy from "./admin/GradingPolicy.jsx";
 
-/* Admin layout: sidebar menu (Bootstrap nav) + content area. State picks which section shows. */
+/* Admin layout: sidebar menu (Bootstrap nav, visual only) + one section at a
+   time. All sections are imported above (unused ones are dropped), so switch
+   by editing just the render lines below. No state, UI only. */
 export default function AdminDashboard() {
-  const [view, setView] = useState("overview");
-
   return (
     <div className="d-flex vh-100">
       {/* Sidebar: fixed espresso column, same for every section */}
@@ -19,44 +18,44 @@ export default function AdminDashboard() {
         <a className="navbar-brand mb-4" href="#">GradeScan</a>
         <ul className="nav flex-column gap-1">
           <li className="nav-item">
-            <button type="button" className={"nav-link w-100 text-start " + (view === "overview" ? "active" : "")} onClick={() => setView("overview")}>
+            <button type="button" className="nav-link active w-100 text-start">
               <i className="bi bi-speedometer2"></i> Overview
             </button>
           </li>
           <li className="nav-item">
-            <button type="button" className={"nav-link w-100 text-start " + (view === "teachers" ? "active" : "")} onClick={() => setView("teachers")}>
+            <button type="button" className="nav-link w-100 text-start">
               <i className="bi bi-people"></i> Pending Teachers
             </button>
           </li>
           <li className="nav-item">
-            <button type="button" className={"nav-link w-100 text-start " + (view === "announcements" ? "active" : "")} onClick={() => setView("announcements")}>
+            <button type="button" className="nav-link w-100 text-start">
               <i className="bi bi-megaphone"></i> Announcements
             </button>
           </li>
           <li className="nav-item">
-            <button type="button" className={"nav-link w-100 text-start " + (view === "classes" ? "active" : "")} onClick={() => setView("classes")}>
+            <button type="button" className="nav-link w-100 text-start">
               <i className="bi bi-mortarboard"></i> Classes &amp; Subjects
             </button>
           </li>
           <li className="nav-item">
-            <button type="button" className={"nav-link w-100 text-start " + (view === "policy" ? "active" : "")} onClick={() => setView("policy")}>
+            <button type="button" className="nav-link w-100 text-start">
               <i className="bi bi-sliders"></i> Grading Policy
             </button>
           </li>
         </ul>
-        {/* Log out: placeholder — switch the page in main.jsx */}
+        {/* Log out: placeholder — switch the page in App.jsx */}
         <div className="mt-auto">
           <a href="#/" className="nav-link text-white-50">Log out</a>
         </div>
       </aside>
 
-      {/* Main content: shows one section at a time; scrolls if taller than the screen */}
+      {/* The visible section — uncomment one, keep the rest commented */}
       <main className="flex-grow-1 p-4 overflow-auto">
-        {view === "overview" && <Overview />}
-        {view === "teachers" && <PendingTeachers />}
-        {view === "announcements" && <Announcements />}
-        {view === "classes" && <ClassesSubjects />}
-        {view === "policy" && <GradingPolicy />}
+        {/* <Overview /> */}
+        {/* <PendingTeachers /> */}
+        {/* <Announcements /> */}
+        {/* <ClassesSubjects /> */}
+        {/* <GradingPolicy /> */}
       </main>
     </div>
   );
