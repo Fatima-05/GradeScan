@@ -1,17 +1,19 @@
-/* Admin — Log in. Static UI: Admin has no sign up, so there is no toggle. */
+import { Link } from "react-router-dom";
+
+/* Admin — Log in. Pills route to the other roles. Admin has no sign up. */
 export default function AdminLogin() {
   return (
     <>
-      {/* Role tabs: Bootstrap nav-pills — visual only */}
+      {/* Role tabs: each pill routes to that role's login page */}
       <ul className="nav nav-pills justify-content-center mb-4">
         <li className="nav-item">
-          <button type="button" className="nav-link">Faculty</button>
+          <Link to="/login" className="nav-link">Faculty</Link>
         </li>
         <li className="nav-item">
-          <button type="button" className="nav-link active">Admin</button>
+          <Link to="/login/admin" className="nav-link active">Admin</Link>
         </li>
         <li className="nav-item">
-          <button type="button" className="nav-link">Student</button>
+          <Link to="/login/student" className="nav-link">Student</Link>
         </li>
       </ul>
 

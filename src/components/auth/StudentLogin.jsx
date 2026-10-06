@@ -1,26 +1,28 @@
-/* Student — Log in. Static UI: pills and button highlight match this variant. */
+import { Link } from "react-router-dom";
+
+/* Student — Log in. Pills and toggle are <Link>s to the other auth pages. */
 export default function StudentLogin() {
   return (
     <>
-      {/* Role tabs: Bootstrap nav-pills — visual only */}
+      {/* Role tabs: each pill routes to that role's login page */}
       <ul className="nav nav-pills justify-content-center mb-4">
         <li className="nav-item">
-          <button type="button" className="nav-link">Faculty</button>
+          <Link to="/login" className="nav-link">Faculty</Link>
         </li>
         <li className="nav-item">
-          <button type="button" className="nav-link">Admin</button>
+          <Link to="/login/admin" className="nav-link">Admin</Link>
         </li>
         <li className="nav-item">
-          <button type="button" className="nav-link active">Student</button>
+          <Link to="/login/student" className="nav-link active">Student</Link>
         </li>
       </ul>
 
       <div className="card shadow-sm">
         <div className="card-body p-4">
-          {/* Login/Sign up toggle: Bootstrap btn-group — visual only */}
+          {/* Login/Sign up toggle: switches mode for this role */}
           <div className="btn-group w-100 mb-4">
-            <button type="button" className="btn btn-warning">Login</button>
-            <button type="button" className="btn btn-outline-warning">Sign up</button>
+            <Link to="/login/student" className="btn btn-warning">Login</Link>
+            <Link to="/signup/student" className="btn btn-outline-warning">Sign up</Link>
           </div>
 
           {/* Fields: Bootstrap form-control + form-label */}

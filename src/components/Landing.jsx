@@ -1,10 +1,12 @@
+import { Link } from "react-router-dom";
+
 export default function Landing() {
   return (
     <>
       {/* Navbar: Bootstrap Navbar component*/}
       <nav className="navbar navbar-expand-lg bg-dark sticky-top" data-bs-theme="dark">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#home">GradeScan</a>
+          <Link to="/" className="navbar-brand">GradeScan</Link>
           {/* Toggler: Bootstrap collapsible menu*/}
           <button
             className="navbar-toggler"
@@ -17,15 +19,16 @@ export default function Landing() {
           </button>
           <div className="collapse navbar-collapse" id="navMenu">
             <ul className="navbar-nav ms-auto">
-              {/* Nav links: Bootstrap navbar-nav and nav-link utilities. href="#id" + matching section id = plain HTML anchors */}
+              {/* Section links: plain anchors so the browser can scroll.
+                  <Link> is only for switching pages, not in-page scrolling. */}
               <li className="nav-item"><a className="nav-link active" href="#home">Home</a></li>
               <li className="nav-item"><a className="nav-link" href="#features">Features</a></li>
               <li className="nav-item"><a className="nav-link" href="#how-it-works">How it works</a></li>
               <li className="nav-item"><a className="nav-link" href="#about">About</a></li>
               <li className="nav-item"><a className="nav-link" href="#faq">FAQ</a></li>
               <li className="nav-item"><a className="nav-link" href="#contact">Contact</a></li>
-              {/* Nav link: placeholder — switch the page in main.jsx */}
-              <li className="nav-item"><a className="nav-link" href="#login">Login</a></li>
+              {/* Nav link: page navigation, so it's a <Link> */}
+              <li className="nav-item"><Link to="/login" className="nav-link">Login</Link></li>
             </ul>
           </div>
         </div>
@@ -39,8 +42,8 @@ export default function Landing() {
             Reads the answer key from a QR, recognizes student names with OCR,
             and grades MCQ bubble sheets right in your browser.
           </p>
-          {/* Button: Bootstrap Button classes; placeholder — switch the page in main.jsx */}
-          <a href="#login" className="btn btn-warning btn-lg">Get started</a>
+          {/* Button: Bootstrap Button classes; routed to the login page */}
+          <Link to="/login" className="btn btn-warning btn-lg">Get started</Link>
         </div>
       </header>
 

@@ -1,11 +1,17 @@
+import { Link } from "react-router-dom";
 import StudentGrades from "./student/Grades.jsx";
 import StudentRegrade from "./student/Regrade.jsx";
 import StudentAnnouncements from "./student/Announcements.jsx";
 
 /* Student dashboard (viewed as Ayesha Khan): espresso sidebar like the other
-   dashboards, one view at a time. All views are imported above (unused ones
-   are dropped), so switch by editing just the render lines. No state, UI only. */
-export default function StudentDashboard() {
+   dashboards. The router passes the `section` prop (e.g. /student/grades
+   passes "grades"), the sidebar highlights it, and the view renders below. */
+export default function StudentDashboard({ section }) {
+  let content;
+  if (section === "grades") content = <StudentGrades />;
+  else if (section === "regrade") content = <StudentRegrade />;
+  else content = <StudentAnnouncements />;
+
   return (
     <div className="d-flex vh-100">
       {/* Sidebar: espresso, pinned 250px like the admin and teacher sides */}
@@ -13,35 +19,33 @@ export default function StudentDashboard() {
         className="sidebar bg-dark text-white d-flex flex-column p-3"
         style={{ flex: "0 0 250px", width: "250px", minWidth: "250px", maxWidth: "250px" }}
       >
-        <a className="navbar-brand mb-4" href="#">GradeScan</a>
+        <Link to="/" className="navbar-brand mb-4">GradeScan</Link>
         <ul className="nav flex-column gap-1">
           <li className="nav-item">
-            <button type="button" className="nav-link active w-100 text-start">
+            <Link to="/student/grades" className={"nav-link text-start w-100" + (section === "grades" ? " active" : "")}>
               <i className="bi bi-journal-check"></i> My Grades
-            </button>
+            </Link>
           </li>
           <li className="nav-item">
-            <button type="button" className="nav-link w-100 text-start">
+            <Link to="/student/regrade" className={"nav-link text-start w-100" + (section === "regrade" ? " active" : "")}>
               <i className="bi bi-arrow-counterclockwise"></i> Regrade Request
-            </button>
+            </Link>
           </li>
           <li className="nav-item">
-            <button type="button" className="nav-link w-100 text-start">
+            <Link to="/student/announcements" className={"nav-link text-start w-100" + (section === "announcements" ? " active" : "")}>
               <i className="bi bi-megaphone"></i> Announcements
-            </button>
+            </Link>
           </li>
         </ul>
-        {/* Log out: placeholder — switch the page in App.jsx */}
+        {/* Log out: routed back to the login page */}
         <div className="mt-auto">
-          <a href="#/" className="nav-link text-white-50">Log out</a>
+          <Link to="/login" className="nav-link text-white-50">Log out</Link>
         </div>
       </aside>
 
-      {/* The visible view — uncomment one, keep the rest commented */}
+      {/* The view chosen by the current route */}
       <main className="flex-grow-1 p-4 overflow-auto">
-        {/* <StudentGrades /> */}
-        {/* <StudentRegrade /> */}
-        {/* <StudentAnnouncements /> */}
+        {content}
       </main>
     </div>
   );

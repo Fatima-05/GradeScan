@@ -1,13 +1,22 @@
+import { Link } from "react-router-dom";
 import Overview from "./admin/Overview.jsx";
 import PendingTeachers from "./admin/PendingTeachers.jsx";
 import Announcements from "./admin/Announcements.jsx";
 import ClassesSubjects from "./admin/ClassesSubjects.jsx";
 import GradingPolicy from "./admin/GradingPolicy.jsx";
 
-/* Admin layout: sidebar menu (Bootstrap nav, visual only) + one section at a
-   time. All sections are imported above (unused ones are dropped), so switch
-   by editing just the render lines below. No state, UI only. */
-export default function AdminDashboard() {
+/* Admin layout: espresso sidebar + one section at a time. The router passes
+   a `section` prop telling which one to render (e.g. /admin/teachers passes
+   "teachers"); the sidebar highlights it with the Bootstrap `active` class.
+   No state, no <Outlet> — just a Link-driven sidebar and a section picker. */
+export default function AdminDashboard({ section }) {
+  let content;
+  if (section === "overview") content = <Overview />;
+  else if (section === "pending-teachers") content = <PendingTeachers />;
+  else if (section === "announcements") content = <Announcements />;
+  else if (section === "classes-subjects") content = <ClassesSubjects />;
+  else content = <GradingPolicy />;
+
   return (
     <div className="d-flex vh-100">
       {/* Sidebar: fixed espresso column, same for every section */}
@@ -15,47 +24,43 @@ export default function AdminDashboard() {
         className="sidebar bg-dark text-white d-flex flex-column p-3"
         style={{ flex: "0 0 250px", width: "250px", minWidth: "250px", maxWidth: "250px" }}
       >
-        <a className="navbar-brand mb-4" href="#">GradeScan</a>
+        <Link to="/" className="navbar-brand mb-4">GradeScan</Link>
         <ul className="nav flex-column gap-1">
           <li className="nav-item">
-            <button type="button" className="nav-link active w-100 text-start">
+            <Link to="/admin/overview" className={"nav-link text-start w-100" + (section === "overview" ? " active" : "")}>
               <i className="bi bi-speedometer2"></i> Overview
-            </button>
+            </Link>
           </li>
           <li className="nav-item">
-            <button type="button" className="nav-link w-100 text-start">
+            <Link to="/admin/pending-teachers" className={"nav-link text-start w-100" + (section === "pending-teachers" ? " active" : "")}>
               <i className="bi bi-people"></i> Pending Teachers
-            </button>
+            </Link>
           </li>
           <li className="nav-item">
-            <button type="button" className="nav-link w-100 text-start">
+            <Link to="/admin/announcements" className={"nav-link text-start w-100" + (section === "announcements" ? " active" : "")}>
               <i className="bi bi-megaphone"></i> Announcements
-            </button>
+            </Link>
           </li>
           <li className="nav-item">
-            <button type="button" className="nav-link w-100 text-start">
+            <Link to="/admin/classes-subjects" className={"nav-link text-start w-100" + (section === "classes-subjects" ? " active" : "")}>
               <i className="bi bi-mortarboard"></i> Classes &amp; Subjects
-            </button>
+            </Link>
           </li>
           <li className="nav-item">
-            <button type="button" className="nav-link w-100 text-start">
+            <Link to="/admin/grading-policy" className={"nav-link text-start w-100" + (section === "grading-policy" ? " active" : "")}>
               <i className="bi bi-sliders"></i> Grading Policy
-            </button>
+            </Link>
           </li>
         </ul>
-        {/* Log out: placeholder — switch the page in App.jsx */}
+        {/* Log out: routed back to the login page */}
         <div className="mt-auto">
-          <a href="#/" className="nav-link text-white-50">Log out</a>
+          <Link to="/login" className="nav-link text-white-50">Log out</Link>
         </div>
       </aside>
 
-      {/* The visible section — uncomment one, keep the rest commented */}
+      {/* The section chosen by the current route */}
       <main className="flex-grow-1 p-4 overflow-auto">
-        {/* <Overview /> */}
-        {/* <PendingTeachers /> */}
-        {/* <Announcements /> */}
-        {/* <ClassesSubjects /> */}
-        {/* <GradingPolicy /> */}
+        {content}
       </main>
     </div>
   );
