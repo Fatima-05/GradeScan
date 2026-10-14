@@ -1,7 +1,24 @@
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const batchSchema = z.object({
+  folder: z.any().refine((files) => files && files.length > 0, "Folder of sheet photos is required"),
+});
+
 /* Batch: process a whole folder of scans at once, auto-create new students,
-   and export CSV with an average/high/low summary row. Static UI — the
-   summary numbers are hard-coded from the seeded results. */
+   and export CSV with an average/high/low summary row. The form validates
+   that a folder was chosen; the summary numbers are seeded. */
 export default function Batch() {
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(batchSchema),
+    defaultValues: { folder: undefined },
+  });
+
+  function onBatchSubmit(data) {
+    console.log("Folder queued for batch processing", data);
+  }
+
   return (
     <>
       <h2 className="mb-1">Batch Processing</h2>
@@ -12,9 +29,12 @@ export default function Batch() {
       <div className="card mb-4">
         <div className="card-body">
           {/* Folder: Bootstrap form-control (webkitdirectory picks a folder) */}
-          <label className="form-label">Folder of sheet photos</label>
-          <input className="form-control mb-3" type="file" webkitdirectory="" />
-          <button type="button" className="btn btn-warning px-4">Process folder</button>
+          <form onSubmit={handleSubmit(onBatchSubmit)}>
+            <label className="form-label">Folder of sheet photos</label>
+            <input className="form-control mb-3" type="file" webkitdirectory="" {...register("folder")} />
+            {errors.folder && <span className="text-danger d-block mb-3">{errors.folder.message}</span>}
+            <button type="submit" className="btn btn-warning px-4">Process folder</button>
+          </form>
         </div>
       </div>
 
