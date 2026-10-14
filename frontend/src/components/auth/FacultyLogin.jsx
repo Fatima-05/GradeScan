@@ -1,7 +1,24 @@
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const facultyLoginSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Enter a valid email"),
+  password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters").max(30, "Password must be at most 30 characters"),
+});
 
 /* Faculty — Log in. Pills and toggle are <Link>s to the other auth pages. */
 export default function FacultyLogin() {
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(facultyLoginSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
+  function onFacultyLoginSubmit(data) {
+    console.log("Faculty login submitted", data);
+  }
+
   return (
     <>
       {/* Role tabs: each pill routes to that role's login page */}
@@ -25,21 +42,25 @@ export default function FacultyLogin() {
             <Link to="/signup" className="btn btn-outline-warning">Sign up</Link>
           </div>
 
-          {/* Fields: Bootstrap form-control + form-label */}
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input className="form-control" type="email" placeholder="you@school.edu" />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input className="form-control" type="password" placeholder="••••••" />
-          </div>
-          <div className="text-end mb-3">
-            <a href="#forgot" className="text-warning small">Forgot password?</a>
-          </div>
+          {/* Fields: Bootstrap form-control + form-label, validated with react-hook-form + zod */}
+          <form onSubmit={handleSubmit(onFacultyLoginSubmit)}>
+            <div className="mb-3">
+              <label className="form-label">Email</label>
+              <input className="form-control" type="email" placeholder="you@school.edu" {...register("email")} />
+              {errors.email && <span className="text-danger">{errors.email.message}</span>}
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Password</label>
+              <input className="form-control" type="password" placeholder="••••••" {...register("password")} />
+              {errors.password && <span className="text-danger">{errors.password.message}</span>}
+            </div>
+            <div className="text-end mb-3">
+              <a href="#forgot" className="text-warning small">Forgot password?</a>
+            </div>
 
-          {/* Button: Bootstrap Button component — visual only */}
-          <button type="button" className="btn btn-warning w-100">Log in</button>
+            {/* Submit button: runs zod validation, then onFacultyLoginSubmit */}
+            <button type="submit" className="btn btn-warning w-100">Log in</button>
+          </form>
         </div>
       </div>
     </>

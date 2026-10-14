@@ -1,7 +1,26 @@
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const facultySignupSchema = z.object({
+  fullName: z.string().min(1, "Full name is required").min(2, "Full name must be at least 2 characters").max(40, "Full name must be at most 40 characters"),
+  email: z.string().min(1, "Email is required").email("Enter a valid email"),
+  subject: z.string().min(1, "Subject is required").min(2, "Subject must be at least 2 characters").max(30, "Subject must be at most 30 characters"),
+  password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters").max(30, "Password must be at most 30 characters"),
+});
 
 /* Faculty — Sign up. Pills and toggle are <Link>s to the other auth pages. */
 export default function FacultySignup() {
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(facultySignupSchema),
+    defaultValues: { fullName: "", email: "", subject: "", password: "" },
+  });
+
+  function onFacultySignupSubmit(data) {
+    console.log("Faculty signup submitted", data);
+  }
+
   return (
     <>
       {/* Role tabs: each pill routes to that role's login page */}
@@ -25,26 +44,32 @@ export default function FacultySignup() {
             <Link to="/signup" className="btn btn-warning">Sign up</Link>
           </div>
 
-          {/* Fields: Bootstrap form-control + form-label */}
-          <div className="mb-3">
-            <label className="form-label">Full name</label>
-            <input className="form-control" type="text" placeholder="Your name" />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input className="form-control" type="email" placeholder="you@school.edu" />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Subject</label>
-            <input className="form-control" type="text" placeholder="e.g. AI" />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input className="form-control" type="password" placeholder="••••••" />
-          </div>
+          {/* Fields: Bootstrap form-control + form-label, validated with react-hook-form + zod */}
+          <form onSubmit={handleSubmit(onFacultySignupSubmit)}>
+            <div className="mb-3">
+              <label className="form-label">Full name</label>
+              <input className="form-control" type="text" placeholder="Your name" {...register("fullName")} />
+              {errors.fullName && <span className="text-danger">{errors.fullName.message}</span>}
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Email</label>
+              <input className="form-control" type="email" placeholder="you@school.edu" {...register("email")} />
+              {errors.email && <span className="text-danger">{errors.email.message}</span>}
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Subject</label>
+              <input className="form-control" type="text" placeholder="e.g. AI" {...register("subject")} />
+              {errors.subject && <span className="text-danger">{errors.subject.message}</span>}
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Password</label>
+              <input className="form-control" type="password" placeholder="••••••" {...register("password")} />
+              {errors.password && <span className="text-danger">{errors.password.message}</span>}
+            </div>
 
-          {/* Button: Bootstrap Button component — visual only */}
-          <button type="button" className="btn btn-warning w-100">Create account</button>
+            {/* Submit button: runs zod validation, then onFacultySignupSubmit */}
+            <button type="submit" className="btn btn-warning w-100">Create account</button>
+          </form>
         </div>
       </div>
     </>
