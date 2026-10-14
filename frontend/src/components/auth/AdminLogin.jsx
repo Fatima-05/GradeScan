@@ -37,15 +37,15 @@ export default function AdminLogin() {
       <div className="card shadow-sm">
         <div className="card-body p-4">
           {/* Fields: Bootstrap form-control + form-label, validated with react-hook-form + zod */}
-          <form onSubmit={handleSubmit(onAdminLoginSubmit)}>
+          <form onSubmit={handleSubmit(onAdminLoginSubmit)} autoComplete="off">
             <div className="mb-3">
               <label className="form-label">Email</label>
-              <input className="form-control" type="email" placeholder="admin@school.edu" {...register("email")} />
+              <input className="form-control" type="email" placeholder="admin@school.edu" autoComplete="off" {...register("email")} />
               {errors.email && <span className="text-danger">{errors.email.message}</span>}
             </div>
             <div className="mb-3">
               <label className="form-label">Password</label>
-              <input className="form-control" type="password" placeholder="••••••" {...register("password")} />
+              <input className="form-control" type="password" placeholder="••••••" autoComplete="new-password" {...register("password")} />
               {errors.password && <span className="text-danger">{errors.password.message}</span>}
             </div>
 

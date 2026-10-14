@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const facultySignupSchema = z.object({
   fullName: z.string().min(1, "Full name is required").min(2, "Full name must be at least 2 characters").max(40, "Full name must be at most 40 characters"),
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
-  subject: z.string().min(1, "Subject is required").min(2, "Subject must be at least 2 characters").max(30, "Subject must be at most 30 characters"),
   password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters").max(30, "Password must be at most 30 characters"),
 });
 
@@ -14,7 +13,7 @@ const facultySignupSchema = z.object({
 export default function FacultySignup() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(facultySignupSchema),
-    defaultValues: { fullName: "", email: "", subject: "", password: "" },
+    defaultValues: { fullName: "", email: "", password: "" },
   });
 
   function onFacultySignupSubmit(data) {
@@ -55,11 +54,6 @@ export default function FacultySignup() {
               <label className="form-label">Email</label>
               <input className="form-control" type="email" placeholder="you@school.edu" {...register("email")} />
               {errors.email && <span className="text-danger">{errors.email.message}</span>}
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Subject</label>
-              <input className="form-control" type="text" placeholder="e.g. AI" {...register("subject")} />
-              {errors.subject && <span className="text-danger">{errors.subject.message}</span>}
             </div>
             <div className="mb-3">
               <label className="form-label">Password</label>

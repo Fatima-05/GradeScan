@@ -43,15 +43,15 @@ export default function StudentLogin() {
           </div>
 
           {/* Fields: Bootstrap form-control + form-label, validated with react-hook-form + zod */}
-          <form onSubmit={handleSubmit(onStudentLoginSubmit)}>
+          <form onSubmit={handleSubmit(onStudentLoginSubmit)} autoComplete="off">
             <div className="mb-3">
               <label className="form-label">Email</label>
-              <input className="form-control" type="email" placeholder="you@school.edu" {...register("email")} />
+              <input className="form-control" type="email" placeholder="you@school.edu" autoComplete="off" {...register("email")} />
               {errors.email && <span className="text-danger">{errors.email.message}</span>}
             </div>
             <div className="mb-3">
               <label className="form-label">Password</label>
-              <input className="form-control" type="password" placeholder="••••••" {...register("password")} />
+              <input className="form-control" type="password" placeholder="••••••" autoComplete="new-password" {...register("password")} />
               {errors.password && <span className="text-danger">{errors.password.message}</span>}
             </div>
             <div className="text-end mb-3">

@@ -1,6 +1,25 @@
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const regradeSchema = z.object({
+  quiz: z.enum(["AI Quiz (Set-C)", "OS Quiz (Set-A)", "DS Quiz (Set-A)"]),
+  questionNumber: z.number({ error: "Question number is required" }).int("Question number must be a whole number").min(1, "Question number must be at least 1").max(18, "Question number must be at most 18"),
+  reason: z.string().min(1, "Reason is required").min(10, "Reason must be at least 10 characters").max(200, "Reason must be at most 200 characters"),
+});
+
 /* Regrade Request (student side): a form to flag a question, plus the status
-   of past requests. Static UI — nothing submits, DB comes later. */
+   of past requests. The form validates with react-hook-form + zod. */
 export default function Regrade() {
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(regradeSchema),
+    defaultValues: { quiz: "AI Quiz (Set-C)", questionNumber: undefined, reason: "" },
+  });
+
+  function onRegradeSubmit(data) {
+    console.log("Regrade request submitted", data);
+  }
+
   return (
     <>
       <h2 className="mb-1">Regrade Request</h2>
@@ -9,26 +28,30 @@ export default function Regrade() {
       {/* Request form: Bootstrap form-select + form-control + Button component */}
       <div className="card mb-4">
         <div className="card-body">
-          <div className="row g-3">
-            <div className="col-md-6">
-              <label className="form-label">Quiz</label>
-              <select className="form-select" defaultValue="AI Quiz (Set-C)">
-                <option>AI Quiz (Set-C)</option>
-                <option>OS Quiz (Set-A)</option>
-                <option>DS Quiz (Set-A)</option>
-              </select>
+          <form onSubmit={handleSubmit(onRegradeSubmit)}>
+            <div className="row g-3">
+              <div className="col-md-6">
+                <label className="form-label">Quiz</label>
+                <select className="form-select" {...register("quiz")}>
+                  <option>AI Quiz (Set-C)</option>
+                  <option>OS Quiz (Set-A)</option>
+                  <option>DS Quiz (Set-A)</option>
+                </select>
+              </div>
+              <div className="col-md-6">
+                <label className="form-label">Question number</label>
+                <input className="form-control" type="number" placeholder="e.g. 15" {...register("questionNumber", { valueAsNumber: true })} />
+                {errors.questionNumber && <span className="text-danger">{errors.questionNumber.message}</span>}
+              </div>
+              <div className="col-12">
+                <label className="form-label">Reason</label>
+                <textarea className="form-control" rows="3" placeholder="Explain what went wrong…" {...register("reason")}></textarea>
+                {errors.reason && <span className="text-danger">{errors.reason.message}</span>}
+              </div>
             </div>
-            <div className="col-md-6">
-              <label className="form-label">Question number</label>
-              <input className="form-control" type="text" placeholder="e.g. 15" />
-            </div>
-            <div className="col-12">
-              <label className="form-label">Reason</label>
-              <textarea className="form-control" rows="3" placeholder="Explain what went wrong…"></textarea>
-            </div>
-          </div>
-          {/* Button: Bootstrap Button component — visual only */}
-          <button type="button" className="btn btn-warning mt-3 px-4">Send request</button>
+            {/* Submit button: runs zod validation, then onRegradeSubmit */}
+            <button type="submit" className="btn btn-warning mt-3 px-4">Send request</button>
+          </form>
         </div>
       </div>
 
