@@ -1,30 +1,76 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const reviewSchema = z.object({
-  name1: z.string().min(1, "Name is required").min(2, "Name must be at least 2 characters"),
-  reg1: z.string().min(1, "Reg# is required").regex(/^(FA|SP)\d{2}-[A-Z]{2,4}-\d{3}$/, "Format: FA24-BSE-000"),
-  name2: z.string().min(1, "Name is required").min(2, "Name must be at least 2 characters"),
-  reg2: z.string().min(1, "Reg# is required").regex(/^(FA|SP)\d{2}-[A-Z]{2,4}-\d{3}$/, "Format: FA24-BSE-000"),
+const rowSchema = z.object({
+  name: z.string().min(1, "Name is required").min(2, "Name must be at least 2 characters"),
+  reg: z.string().min(1, "Reg# is required").regex(/^(FA|SP)\d{2}-[A-Z]{2,4}-\d{3}$/, "Format: FA24-BSE-000"),
 });
 
 /* Review: correct Name/Reg# when OCR got them wrong, before a result is
-   finalised. One form wraps the table (a form can't sit inside a <tr>), so
-   both Confirm buttons submit the same validated form. */
-export default function Review() {
+   finalised. Each pending sheet is its own card with its own form, so
+   Confirming one student submits and validates only that row — fixing the
+   earlier behaviour where one Confirm logged every student in the table.
+   The list is array-driven: today the rows are hardcoded defaults, and the
+   only thing that changes later (once the read is allowed) is where `rows`
+   comes from — this component code stays the same. */
+const initialRows = [
+  { id: "s1", file: "sheet_Ayesha_FA24-BSE-100.jpg", date: "26 Sep 2026 10:42", quiz: "AI Quiz (Set-C)", name: "Ayesha Khan", reg: "FA24-BSE-100" },
+  { id: "s2", file: "sheet_Bilal_FA24-BSE-101.jpg", date: "26 Sep 2026 10:42", quiz: "AI Quiz (Set-C)", name: "Bilal Ahmed", reg: "FA24-BSE-101" },
+];
+
+/* One row = one form = one Confirm. Its own useForm instance means validation
+   and submit are isolated to this student, so another row's bad OCR can't
+   block this one, and Confirming here never touches the other row's data. */
+function ReviewRow({ sheet, onConfirm }) {
   const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: zodResolver(reviewSchema),
-    defaultValues: {
-      name1: "Ayesha Khan",
-      reg1: "FA24-BSE-100",
-      name2: "Bilal Ahmed",
-      reg2: "FA24-BSE-101",
-    },
+    resolver: zodResolver(rowSchema),
+    defaultValues: { name: sheet.name, reg: sheet.reg },
   });
 
-  function onReviewSubmit(data) {
-    console.log("Sheet corrections confirmed", data);
+  return (
+    <div className="card mb-3">
+      <div className="card-body">
+        {/* Read-only header: file name and quiz, same info the old table row showed */}
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <span className="fw-semibold">{sheet.file}</span>
+            <small className="text-muted d-block">{sheet.date}</small>
+          </div>
+          <span className="text-muted">{sheet.quiz}</span>
+        </div>
+
+        <form onSubmit={handleSubmit((data) => onConfirm(sheet.id, data))} className="row g-2 align-items-end">
+          <div className="col-md-5">
+            <label className="form-label">Name</label>
+            <input className="form-control" type="text" placeholder="OCR read nothing" {...register("name")} />
+            {errors.name && <span className="text-danger d-block mt-1">{errors.name.message}</span>}
+          </div>
+          <div className="col-md-5">
+            <label className="form-label">Reg#</label>
+            <input className="form-control" type="text" placeholder="Not detected" {...register("reg")} />
+            {errors.reg && <span className="text-danger d-block mt-1">{errors.reg.message}</span>}
+          </div>
+          <div className="col-md-2 d-grid">
+            <button type="submit" className="btn btn-warning">Confirm</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default function Review() {
+  const [rows, setRows] = useState(initialRows);
+
+  function handleConfirm(sheetId, data) {
+    // Today this only updates local state: the real write is part of the
+    // upload→review pipeline, which is still mocked (no sheet model/endpoint
+    // yet). It logs just the one confirmed row and drops it from the pending
+    // list, so each Confirm visibly affects only its own student.
+    console.log("Sheet corrections confirmed", { sheetId, ...data });
+    setRows((prev) => prev.filter((r) => r.id !== sheetId));
   }
 
   return (
@@ -32,64 +78,13 @@ export default function Review() {
       <h2 className="mb-1">Review</h2>
       <p className="text-muted mb-4">Fix any misread names or registration numbers before saving.</p>
 
-      {/* Pending sheets: Bootstrap table with editable Name/Reg# cells */}
-      <div className="card">
-        <div className="card-body">
-          <form onSubmit={handleSubmit(onReviewSubmit)}>
-            <table className="table align-middle mb-0">
-              <thead>
-                <tr>
-                  <th>File</th>
-                  <th>Quiz</th>
-                  <th>Name</th>
-                  <th>Reg#</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Sheet 1 */}
-                <tr>
-                  <td>
-                    sheet_Ayesha_FA24-BSE-100.jpg
-                    <small className="text-muted d-block">26 Sep 2026 10:42</small>
-                  </td>
-                  <td>AI Quiz (Set-C)</td>
-                  <td>
-                    <input className="form-control" type="text" placeholder="OCR read nothing" {...register("name1")} />
-                    {errors.name1 && <span className="text-danger">{errors.name1.message}</span>}
-                  </td>
-                  <td>
-                    <input className="form-control" type="text" placeholder="Not detected" {...register("reg1")} />
-                    {errors.reg1 && <span className="text-danger">{errors.reg1.message}</span>}
-                  </td>
-                  <td>
-                    <button type="submit" className="btn btn-warning btn-sm">Confirm</button>
-                  </td>
-                </tr>
-                {/* Sheet 2 */}
-                <tr>
-                  <td>
-                    sheet_Bilal_FA24-BSE-101.jpg
-                    <small className="text-muted d-block">26 Sep 2026 10:42</small>
-                  </td>
-                  <td>AI Quiz (Set-C)</td>
-                  <td>
-                    <input className="form-control" type="text" placeholder="OCR read nothing" {...register("name2")} />
-                    {errors.name2 && <span className="text-danger">{errors.name2.message}</span>}
-                  </td>
-                  <td>
-                    <input className="form-control" type="text" placeholder="Not detected" {...register("reg2")} />
-                    {errors.reg2 && <span className="text-danger">{errors.reg2.message}</span>}
-                  </td>
-                  <td>
-                    <button type="submit" className="btn btn-warning btn-sm">Confirm</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </form>
-        </div>
-      </div>
+      {rows.length === 0 ? (
+        <div className="alert alert-success mb-0">No pending sheets — all confirmed.</div>
+      ) : (
+        rows.map((sheet) => (
+          <ReviewRow key={sheet.id} sheet={sheet} onConfirm={handleConfirm} />
+        ))
+      )}
     </>
   );
 }

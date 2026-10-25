@@ -5,9 +5,17 @@ import { useForm } from "react-hook-form";
 import { regradeDecisionAxiosFunction } from "../../service/api";
 
 export default function Regrade() {
-  const { register, getValues } = useForm({ defaultValues: { teacherNote: "" } });
+  const { register, getValues, setError, clearErrors, formState: { errors } } = useForm({ defaultValues: { teacherNote: "" } });
 
   async function onRegradeDecision(status) {
+    if (status === "rejected") {
+      const note = (getValues("teacherNote") || "").trim();
+      if (note.length < 15) {
+        setError("teacherNote", { type: "manual", message: "Add a note with at least 15 characters." });
+        return;
+      }
+    }
+    clearErrors("teacherNote");
     try {
       const response = await regradeDecisionAxiosFunction({
         quiz: "AI Quiz (Set-C)",
@@ -38,6 +46,7 @@ export default function Regrade() {
               <p className="mb-2 text-muted">I marked B but it should be A.</p>
               {/* The note is written first, then Approve/Reject */}
               <textarea className="form-control mb-2" rows="2" placeholder="Add a note for the student…" {...register("teacherNote")}></textarea>
+              {errors.teacherNote && <span className="text-danger d-block mt-1 mb-2">{errors.teacherNote.message}</span>}
               <div className="d-flex gap-2">
                 <button type="button" className="btn btn-warning btn-sm" onClick={() => onRegradeDecision("approved")}>Approve</button>
                 <button type="button" className="btn btn-outline-warning btn-sm" onClick={() => onRegradeDecision("rejected")}>Reject</button>

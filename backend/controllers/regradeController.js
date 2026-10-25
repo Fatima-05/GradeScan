@@ -25,6 +25,9 @@ export const regradeDecisionController = (req, res) => {
     { status: status, teacherNote: teacherNote, decidedAt: new Date() }
   ) // is se regrade request ka status update hoga jo backend ke /regrade route pe PUT request bhejne k liye use hoga. Ye function define karta hai ki regrade request ka data kaise update hoga MongoDB database mei.
   
-    .then(() => res.send("Regrade request " + status))
+    .then((request) => {
+      if (!request) return res.status(404).send("No pending regrade request found for that quiz and question");
+      res.send("Regrade request " + status);
+    })
     .catch((error) => res.status(500).send("Error updating regrade request: " + error));
 };

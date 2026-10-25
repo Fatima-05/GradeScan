@@ -21,6 +21,9 @@ export const subjectRemoveController = (req, res) => {
   // is se frontend se subject remove ka request ayega tou yeh route handle karega aur console mei message print karega. Ye function backend ke /subject route pe DELETE request bhejne k liye use hoga. Ye function define karta hai ki subject ka data kaise delete hoga MongoDB database mei.
 
   Subject.deleteOne({ subjectName: subjectName })
-    .then(() => res.send("Subject removed"))
+    .then((result) => {
+      if (result.deletedCount === 0) return res.status(404).send("No subject found with that name");
+      res.send("Subject removed");
+    })
     .catch((error) => res.status(500).send("Error removing subject: " + error));
 }; // is function ko frontend ke Subject.jsx component se call kiya jayega jab user subject remove form submit karega. Ye function backend ke /subject route pe DELETE request bhejega aur data ko delete karega.
