@@ -1,8 +1,10 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { regradeAxiosFunction } from "../../service/api";
 
 const regradeSchema = z.object({
+  registrationNumber: z.string().min(1, "Registration number is required").regex(/^(FA|SP)\d{2}-[A-Z]{2,4}-\d{3}$/, "Format: FA24-BSE-000"),
   quiz: z.enum(["AI Quiz (Set-C)", "OS Quiz (Set-A)", "DS Quiz (Set-A)"]),
   questionNumber: z.number({ error: "Question number is required" }).int("Question number must be a whole number").min(1, "Question number must be at least 1").max(18, "Question number must be at most 18"),
   reason: z.string().min(1, "Reason is required").min(10, "Reason must be at least 10 characters").max(200, "Reason must be at most 200 characters"),
@@ -13,11 +15,16 @@ const regradeSchema = z.object({
 export default function Regrade() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(regradeSchema),
-    defaultValues: { quiz: "AI Quiz (Set-C)", questionNumber: undefined, reason: "" },
+    defaultValues: { registrationNumber: "", quiz: "AI Quiz (Set-C)", questionNumber: undefined, reason: "" },
   });
 
-  function onRegradeSubmit(data) {
-    console.log("Regrade request submitted", data);
+  async function onRegradeSubmit(data) {
+    try {
+      const response = await regradeAxiosFunction(data);
+      console.log("Regrade request sent", response.data);
+    } catch (error) {
+      console.log("Regrade failed", error);
+    }
   }
 
   return (
@@ -37,6 +44,11 @@ export default function Regrade() {
                   <option>OS Quiz (Set-A)</option>
                   <option>DS Quiz (Set-A)</option>
                 </select>
+              </div>
+              <div className="col-md-6">
+                <label className="form-label">Registration number</label>
+                <input className="form-control" placeholder="e.g. FA24-BSE-000" {...register("registrationNumber")} />
+                {errors.registrationNumber && <span className="text-danger">{errors.registrationNumber.message}</span>}
               </div>
               <div className="col-md-6">
                 <label className="form-label">Question number</label>

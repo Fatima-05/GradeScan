@@ -1,5 +1,25 @@
-/* Pending Teachers: static cards. Approve/Reject are visual only this phase. */
+import { approveTeacherAxiosFunction, declineTeacherAxiosFunction } from "../../service/api";
+
+/* Pending Teachers: static cards. Approve/Reject call the backend. */
 export default function PendingTeachers() {
+  async function onTeacherApprove(email) {
+    try {
+      const response = await approveTeacherAxiosFunction({ email: email });
+      console.log("Teacher approved", response.data);
+    } catch (error) {
+      console.log("Approve failed", error);
+    }
+  }
+
+  async function onTeacherDecline(email) {
+    try {
+      const response = await declineTeacherAxiosFunction({ email: email });
+      console.log("Teacher declined", response.data);
+    } catch (error) {
+      console.log("Decline failed", error);
+    }
+  }
+
   return (
     <>
       <h2 className="mb-4">Pending Teacher Signups</h2>
@@ -25,8 +45,8 @@ export default function PendingTeachers() {
               <span className="badge bg-secondary mb-3">Physics</span>
               {/* Buttons: Bootstrap Button component, one per card */}
               <div className="d-flex gap-2">
-                <button className="btn btn-warning btn-sm flex-fill">Approve</button>
-                <button className="btn btn-outline-warning btn-sm flex-fill">Reject</button>
+                <button className="btn btn-warning btn-sm flex-fill" onClick={() => onTeacherApprove("ali.raza@school.edu")}>Approve</button>
+                <button className="btn btn-outline-warning btn-sm flex-fill" onClick={() => onTeacherDecline("ali.raza@school.edu")}>Reject</button>
               </div>
             </div>
           </div>
@@ -49,8 +69,8 @@ export default function PendingTeachers() {
               </div>
               <span className="badge bg-secondary mb-3">AI</span>
               <div className="d-flex gap-2">
-                <button className="btn btn-warning btn-sm flex-fill">Approve</button>
-                <button className="btn btn-outline-warning btn-sm flex-fill">Reject</button>
+                <button className="btn btn-warning btn-sm flex-fill" onClick={() => onTeacherApprove("sara.ahmed@school.edu")}>Approve</button>
+                <button className="btn btn-outline-warning btn-sm flex-fill" onClick={() => onTeacherDecline("sara.ahmed@school.edu")}>Reject</button>
               </div>
             </div>
           </div>
@@ -73,8 +93,8 @@ export default function PendingTeachers() {
               </div>
               <span className="badge bg-secondary mb-3">Operating Systems</span>
               <div className="d-flex gap-2">
-                <button className="btn btn-warning btn-sm flex-fill">Approve</button>
-                <button className="btn btn-outline-warning btn-sm flex-fill">Reject</button>
+                <button className="btn btn-warning btn-sm flex-fill" onClick={() => onTeacherApprove("hamza.khan@school.edu")}>Approve</button>
+                <button className="btn btn-outline-warning btn-sm flex-fill" onClick={() => onTeacherDecline("hamza.khan@school.edu")}>Reject</button>
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { quizAxiosFunction } from "../../service/api";
 
 const quizSchema = z.object({
   title: z.string().min(1, "Quiz title is required").min(3, "Quiz title must be at least 3 characters").max(40, "Quiz title must be at most 40 characters"),
@@ -47,8 +48,13 @@ export default function Quizzes() {
     },
   });
 
-  function onQuizSubmit(data) {
-    console.log("Quiz created", data);
+  async function onQuizSubmit(data) {
+    try {
+      const response = await quizAxiosFunction(data);
+      console.log("Quiz created", response.data);
+    } catch (error) {
+      console.log("Quiz failed", error);
+    }
   }
 
   return (

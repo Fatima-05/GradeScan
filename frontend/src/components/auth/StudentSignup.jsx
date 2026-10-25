@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { studentSignupAxiosFunction } from "../../service/api";
 
 const studentSignupSchema = z.object({
   fullName: z.string().min(1, "Full name is required").min(2, "Full name must be at least 2 characters").max(40, "Full name must be at most 40 characters"),
@@ -18,9 +19,15 @@ export default function StudentSignup() {
     defaultValues: { fullName: "", email: "", registrationNumber: "", password: "" },
   });
 
-  function onStudentSignupSubmit(data) {
-    console.log("Student signup submitted", data);
+  async function onStudentSignupSubmit(data) {
+    try {
+      const response = await studentSignupAxiosFunction(data);
+      console.log("Student registered", response.data);
+    } catch (error) {
+      console.log("Signup failed", error);
+    }
   }
+  // JSX for the student signup form, including role tabs, login/signup toggle, and form fields with validation messages
 
   return (
     <>

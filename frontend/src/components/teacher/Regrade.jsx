@@ -1,7 +1,26 @@
 /* Regrade: queue of student-submitted requests for this teacher's quizzes.
    The note for the student is written before deciding (visual only), and
    processed requests show no note box. Static UI — statuses are hard-coded. */
+import { useForm } from "react-hook-form";
+import { regradeDecisionAxiosFunction } from "../../service/api";
+
 export default function Regrade() {
+  const { register, getValues } = useForm({ defaultValues: { teacherNote: "" } });
+
+  async function onRegradeDecision(status) {
+    try {
+      const response = await regradeDecisionAxiosFunction({
+        quiz: "AI Quiz (Set-C)",
+        questionNumber: 6,
+        status: status,
+        teacherNote: getValues("teacherNote"),
+      });
+      console.log("Regrade " + status, response.data);
+    } catch (error) {
+      console.log("Regrade decision failed", error);
+    }
+  }
+
   return (
     <>
       <h2 className="mb-1">Regrade Requests</h2>
@@ -18,10 +37,10 @@ export default function Regrade() {
               </p>
               <p className="mb-2 text-muted">I marked B but it should be A.</p>
               {/* The note is written first, then Approve/Reject */}
-              <textarea className="form-control mb-2" rows="2" placeholder="Add a note for the student…"></textarea>
+              <textarea className="form-control mb-2" rows="2" placeholder="Add a note for the student…" {...register("teacherNote")}></textarea>
               <div className="d-flex gap-2">
-                <button type="button" className="btn btn-warning btn-sm">Approve</button>
-                <button type="button" className="btn btn-outline-warning btn-sm">Reject</button>
+                <button type="button" className="btn btn-warning btn-sm" onClick={() => onRegradeDecision("approved")}>Approve</button>
+                <button type="button" className="btn btn-outline-warning btn-sm" onClick={() => onRegradeDecision("rejected")}>Reject</button>
               </div>
             </div>
             <span className="badge text-white" style={{ background: "#a8763e" }}>Pending</span>

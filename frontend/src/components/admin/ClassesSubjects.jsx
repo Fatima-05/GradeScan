@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { classSectionAxiosFunction, removeClassSectionAxiosFunction, subjectAxiosFunction, removeSubjectAxiosFunction } from "../../service/api";
 
 const classSchema = z.object({
   className: z.string().min(1, "Class name is required").regex(/^[A-Z]{3,4}-\d[A-Z]$/, "Format: BSE-4A"),
@@ -23,12 +24,40 @@ export default function ClassesSubjects() {
     defaultValues: { subjectName: "" },
   });
 
-  function onClassSubmit(data) {
-    console.log("Class added", data);
+  async function onClassSubmit(data) {
+    try {
+      const response = await classSectionAxiosFunction(data);
+      console.log("Class added", response.data);
+    } catch (error) {
+      console.log("Failed to add class", error);
+    }
   }
 
-  function onSubjectSubmit(data) {
-    console.log("Subject added", data);
+  async function onClassRemove(className) {
+    try {
+      const response = await removeClassSectionAxiosFunction({ className: className });
+      console.log("Class removed", response.data);
+    } catch (error) {
+      console.log("Failed to remove class", error);
+    }
+  }
+
+  async function onSubjectSubmit(data) {
+    try {
+      const response = await subjectAxiosFunction(data);
+      console.log("Subject added", response.data);
+    } catch (error) {
+      console.log("Failed to add subject", error);
+    }
+  }
+
+  async function onSubjectRemove(subjectName) {
+    try {
+      const response = await removeSubjectAxiosFunction({ subjectName: subjectName });
+      console.log("Subject removed", response.data);
+    } catch (error) {
+      console.log("Failed to remove subject", error);
+    }
   }
 
   return (
@@ -51,13 +80,13 @@ export default function ClassesSubjects() {
               {/* List: Bootstrap list-group component */}
               <ul className="list-group">
                 <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  BSE-4A <a href="#remove" className="text-muted">remove</a>
+                  BSE-4A <button type="button" className="btn btn-link text-muted p-0" onClick={() => onClassRemove("BSE-4A")}>remove</button>
                 </li>
                 <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  BSE-4B <a href="#remove" className="text-muted">remove</a>
+                  BSE-4B <button type="button" className="btn btn-link text-muted p-0" onClick={() => onClassRemove("BSE-4B")}>remove</button>
                 </li>
                 <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  BSCS-3A <a href="#remove" className="text-muted">remove</a>
+                  BSCS-3A <button type="button" className="btn btn-link text-muted p-0" onClick={() => onClassRemove("BSCS-3A")}>remove</button>
                 </li>
               </ul>
             </div>
@@ -77,13 +106,13 @@ export default function ClassesSubjects() {
               </form>
               <ul className="list-group">
                 <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  AI <a href="#remove" className="text-muted">remove</a>
+                  AI <button type="button" className="btn btn-link text-muted p-0" onClick={() => onSubjectRemove("AI")}>remove</button>
                 </li>
                 <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  Operating Systems <a href="#remove" className="text-muted">remove</a>
+                  Operating Systems <button type="button" className="btn btn-link text-muted p-0" onClick={() => onSubjectRemove("Operating Systems")}>remove</button>
                 </li>
                 <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  Databases <a href="#remove" className="text-muted">remove</a>
+                  Databases <button type="button" className="btn btn-link text-muted p-0" onClick={() => onSubjectRemove("Databases")}>remove</button>
                 </li>
               </ul>
             </div>

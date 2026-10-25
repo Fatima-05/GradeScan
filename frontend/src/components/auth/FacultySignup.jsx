@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { facultySignupAxiosFunction } from "../../service/api";
 
 const facultySignupSchema = z.object({
@@ -25,7 +24,7 @@ export default function FacultySignup() {
   } catch (error) {
     console.log("Signup failed", error);
   }
-  }
+  } // is function ko frontend ke FacultySignup.jsx component se call kiya jayega jab user signup form submit karega. Ye function backend ke /signup route pe POST request bhejega aur data ko send karega.
 
   return (
     <>

@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { gradingPolicyAxiosFunction } from "../../service/api";
 
 const gradingPolicySchema = z.object({
   negative: z.number({ error: "Negative marking is required" }).min(0, "Negative marking cannot be negative").max(1, "Negative marking must be at most 1"),
@@ -36,8 +37,13 @@ export default function GradingPolicy() {
     },
   });
 
-  function onGradingPolicySubmit(data) {
-    console.log("Grading policy saved", data);
+  async function onGradingPolicySubmit(data) {
+    try {
+      const response = await gradingPolicyAxiosFunction(data);
+      console.log("Grading policy saved", response.data);
+    } catch (error) {
+      console.log("Grading policy failed", error);
+    }
   }
 
   return (
