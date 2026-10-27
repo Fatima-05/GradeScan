@@ -43,7 +43,7 @@ export default function Regrade() {
               <p className="mb-1">
                 <strong>Ayesha Khan</strong> · <span className="text-muted">27 Sep 2026</span>
               </p>
-              <p className="mb-2 text-muted">I marked B but it should be A.</p>
+              <p className="mb-2 text-muted">aik mark se grade change ho raha hai plis</p>
               {/* The note is written first, then Approve/Reject */}
               <textarea className="form-control mb-2" rows="2" placeholder="Add a note for the student…" {...register("teacherNote")}></textarea>
               {errors.teacherNote && <span className="text-danger d-block mt-1 mb-2">{errors.teacherNote.message}</span>}

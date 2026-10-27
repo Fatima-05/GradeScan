@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,8 +12,10 @@ const subjectSchema = z.object({
   subjectName: z.string().min(1, "Subject name is required").min(2, "Subject name must be at least 2 characters").max(30, "Subject name must be at most 30 characters"),
 });
 
-/* Classes & Subjects: two add/remove lists (DB later). Each add row is its
-   own validated form; the remove links are placeholders. */
+/* Classes & Subjects: two add/remove lists. Each add row is its own validated
+   form. The lists are local state so a successful remove drops the item from
+   the UI. The DB change is visible in Compass; the UI can't refresh without a
+   GET, so a newly added class/subject is NOT appended to the list. */
 export default function ClassesSubjects() {
   const { register: registerClass, handleSubmit: handleClassSubmit, formState: { errors: classErrors } } = useForm({
     resolver: zodResolver(classSchema),
@@ -23,6 +26,9 @@ export default function ClassesSubjects() {
     resolver: zodResolver(subjectSchema),
     defaultValues: { subjectName: "" },
   });
+
+  const [classes, setClasses] = useState(["BSE-4A", "BSE-4B", "BSCS-5C"]);
+  const [subjects, setSubjects] = useState(["AI", "Operating Systems", "Web Technologies"]);
 
   async function onClassSubmit(data) {
     try {
@@ -37,6 +43,7 @@ export default function ClassesSubjects() {
     try {
       const response = await removeClassSectionAxiosFunction({ className: className });
       console.log("Class removed", response.data);
+      setClasses((prev) => prev.filter((c) => c !== className));
     } catch (error) {
       console.log("Failed to remove class", error);
     }
@@ -55,6 +62,7 @@ export default function ClassesSubjects() {
     try {
       const response = await removeSubjectAxiosFunction({ subjectName: subjectName });
       console.log("Subject removed", response.data);
+      setSubjects((prev) => prev.filter((s) => s !== subjectName));
     } catch (error) {
       console.log("Failed to remove subject", error);
     }
@@ -77,17 +85,17 @@ export default function ClassesSubjects() {
                 </div>
                 {classErrors.className && <span className="text-danger d-block mb-3">{classErrors.className.message}</span>}
               </form>
-              {/* List: Bootstrap list-group component */}
+              {/* List: rendered from local state; remove drops the item on success */}
               <ul className="list-group">
-                <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  BSE-4A <button type="button" className="btn btn-link text-muted p-0" onClick={() => onClassRemove("BSE-4A")}>remove</button>
-                </li>
-                <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  BSE-4B <button type="button" className="btn btn-link text-muted p-0" onClick={() => onClassRemove("BSE-4B")}>remove</button>
-                </li>
-                <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  BSCS-3A <button type="button" className="btn btn-link text-muted p-0" onClick={() => onClassRemove("BSCS-3A")}>remove</button>
-                </li>
+                {classes.length === 0 ? (
+                  <li className="list-group-item list-group-item-dark">No classes.</li>
+                ) : (
+                  classes.map((c) => (
+                    <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center" key={c}>
+                      {c} <button type="button" className="btn btn-link text-muted p-0" onClick={() => onClassRemove(c)}>remove</button>
+                    </li>
+                  ))
+                )}
               </ul>
             </div>
           </div>
@@ -105,15 +113,15 @@ export default function ClassesSubjects() {
                 {subjectErrors.subjectName && <span className="text-danger d-block mb-3">{subjectErrors.subjectName.message}</span>}
               </form>
               <ul className="list-group">
-                <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  AI <button type="button" className="btn btn-link text-muted p-0" onClick={() => onSubjectRemove("AI")}>remove</button>
-                </li>
-                <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  Operating Systems <button type="button" className="btn btn-link text-muted p-0" onClick={() => onSubjectRemove("Operating Systems")}>remove</button>
-                </li>
-                <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                  Databases <button type="button" className="btn btn-link text-muted p-0" onClick={() => onSubjectRemove("Databases")}>remove</button>
-                </li>
+                {subjects.length === 0 ? (
+                  <li className="list-group-item list-group-item-dark">No subjects.</li>
+                ) : (
+                  subjects.map((s) => (
+                    <li className="list-group-item list-group-item-dark d-flex justify-content-between align-items-center" key={s}>
+                      {s} <button type="button" className="btn btn-link text-muted p-0" onClick={() => onSubjectRemove(s)}>remove</button>
+                    </li>
+                  ))
+                )}
               </ul>
             </div>
           </div>
