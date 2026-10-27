@@ -7,22 +7,22 @@ import { regradeDecisionAxiosFunction } from "../../service/api";
 export default function Regrade() {
   const { register, getValues, setError, clearErrors, formState: { errors } } = useForm({ defaultValues: { teacherNote: "" } });
 
-  async function onRegradeDecision(status) {
-    if (status === "rejected") {
-      const note = (getValues("teacherNote") || "").trim();
-      if (note.length < 15) {
+  async function onRegradeDecision(status) { //this function is called when the Approve or Reject button is clicked
+    if (status === "rejected") { //if the teacher is rejecting the request, check that a note has been added
+      const note = (getValues("teacherNote") || "").trim(); //get the value of the teacherNote field and trim whitespace
+      if (note.length < 15) { //if the note is less than 15 characters, set an error on the teacherNote field
         setError("teacherNote", { type: "manual", message: "Add a note with at least 15 characters." });
         return;
       }
     }
-    clearErrors("teacherNote");
+    clearErrors("teacherNote"); //clear any existing errors on the teacherNote field
     try {
-      const response = await regradeDecisionAxiosFunction({
+      const response = await regradeDecisionAxiosFunction({ //is se data ko backend me bhej rahe hain
         quiz: "AI Quiz (Set-C)",
         questionNumber: 6,
         status: status,
         teacherNote: getValues("teacherNote"),
-      });
+      }); //send the quiz, question number, status, and teacher note to the backend
       console.log("Regrade " + status, response.data);
     } catch (error) {
       console.log("Regrade decision failed", error);

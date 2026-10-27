@@ -18,12 +18,13 @@ const rowSchema = z.object({
 const initialRows = [
   { id: "s1", file: "sheet_Ayesha_FA24-BSE-100.jpg", date: "26 Sep 2026 10:42", quiz: "AI Quiz (Set-C)", name: "Ayesha Khan", reg: "FA24-BSE-100" },
   { id: "s2", file: "sheet_Bilal_FA24-BSE-101.jpg", date: "26 Sep 2026 10:42", quiz: "AI Quiz (Set-C)", name: "Bilal Ahmed", reg: "FA24-BSE-101" },
-];
+]; //today these are hardcoded defaults; later they will come from the upload→review pipeline
 
 /* One row = one form = one Confirm. Its own useForm instance means validation
    and submit are isolated to this student, so another row's bad OCR can't
    block this one, and Confirming here never touches the other row's data. */
-function ReviewRow({ sheet, onConfirm }) {
+   
+function ReviewRow({ sheet, onConfirm }) { //this component is for reviewing a single sheet, with its own form and validation
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(rowSchema),
     defaultValues: { name: sheet.name, reg: sheet.reg },

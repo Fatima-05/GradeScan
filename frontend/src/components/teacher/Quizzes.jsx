@@ -48,14 +48,14 @@ export default function Quizzes() {
     },
   });
 
-  async function onQuizSubmit(data) {
+  async function onQuizSubmit(data) { //this function is called when the Create quiz button is clicked
     try {
-      const response = await quizAxiosFunction(data);
+      const response = await quizAxiosFunction(data); //is se data ko backend me bhej rahe hain
       console.log("Quiz created", response.data);
     } catch (error) {
       console.log("Quiz failed", error);
     }
-  }
+  } 
 
   return (
     <>

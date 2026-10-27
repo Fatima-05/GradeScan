@@ -10,7 +10,7 @@ export const announcementAddController = (req, res) => {
 
   newAnnouncement
     .save()
-    .then(() => res.status(201).send("Announcement added successfully"))
+    .then(() => res.status(201).send("Announcement added successfully")) 
     .catch((error) => res.status(500).send("Error adding announcement: " + error));
 }; // is function ko frontend ke Announcement.jsx component se call kiya jayega jab user announcement form submit karega. Ye function backend ke /announcement route pe POST request bhejega aur data ko send karega.
 

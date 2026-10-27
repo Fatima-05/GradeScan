@@ -16,9 +16,10 @@ const subjectSchema = z.object({
    form. The lists are local state so a successful remove drops the item from
    the UI. The DB change is visible in Compass; the UI can't refresh without a
    GET, so a newly added class/subject is NOT appended to the list. */
-export default function ClassesSubjects() {
+
+export default function ClassesSubjects() { //this component is for managing classes and subjects in the admin panel
   const { register: registerClass, handleSubmit: handleClassSubmit, formState: { errors: classErrors } } = useForm({
-    resolver: zodResolver(classSchema),
+    resolver: zodResolver(classSchema), 
     defaultValues: { className: "" },
   });
 
@@ -27,23 +28,24 @@ export default function ClassesSubjects() {
     defaultValues: { subjectName: "" },
   });
 
-  const [classes, setClasses] = useState(["BSE-4A", "BSE-4B", "BSCS-5C"]);
-  const [subjects, setSubjects] = useState(["AI", "Operating Systems", "Web Technologies"]);
+  const [classes, setClasses] = useState(["BSE-4A", "BSE-4B", "BSCS-5C"]); //this state holds the list of classes; in a real app, this would come from a GET request to the backend
+  const [subjects, setSubjects] = useState(["AI", "Operating Systems", "Web Technologies"]); //this state holds the list of subjects; in a real app, this would come from a GET request to the backend
 
-  async function onClassSubmit(data) {
+  async function onClassSubmit(data) { //this function is called when the Add button for classes is clicked
     try {
-      const response = await classSectionAxiosFunction(data);
+      const response = await classSectionAxiosFunction(data); //is se data ko backend me bhej rahe hain
       console.log("Class added", response.data);
     } catch (error) {
       console.log("Failed to add class", error);
     }
   }
 
-  async function onClassRemove(className) {
+  async function onClassRemove(className) { //this function is called when the remove button for a class is clicked
     try {
-      const response = await removeClassSectionAxiosFunction({ className: className });
+      const response = await removeClassSectionAxiosFunction({ className: className }); //is se className ko backend me bhej rahe hain jahan isay match karke remove karna hai
+
       console.log("Class removed", response.data);
-      setClasses((prev) => prev.filter((c) => c !== className));
+      setClasses((prev) => prev.filter((c) => c !== className)); //is se UI se remove kar rahe hain through filter function, jo className ko match karke remove kar deta hai
     } catch (error) {
       console.log("Failed to remove class", error);
     }
@@ -51,7 +53,7 @@ export default function ClassesSubjects() {
 
   async function onSubjectSubmit(data) {
     try {
-      const response = await subjectAxiosFunction(data);
+      const response = await subjectAxiosFunction(data); //is se data ko backend me bhej rahe hain
       console.log("Subject added", response.data);
     } catch (error) {
       console.log("Failed to add subject", error);
@@ -60,9 +62,9 @@ export default function ClassesSubjects() {
 
   async function onSubjectRemove(subjectName) {
     try {
-      const response = await removeSubjectAxiosFunction({ subjectName: subjectName });
+      const response = await removeSubjectAxiosFunction({ subjectName: subjectName }); //is se subjectName ko backend me bhej rahe hain jahan isay match karke remove karna hai
       console.log("Subject removed", response.data);
-      setSubjects((prev) => prev.filter((s) => s !== subjectName));
+      setSubjects((prev) => prev.filter((s) => s !== subjectName)); //is se UI se remove kar rahe hain through filter function, jo subjectName ko match karke remove kar deta hai
     } catch (error) {
       console.log("Failed to remove subject", error);
     }

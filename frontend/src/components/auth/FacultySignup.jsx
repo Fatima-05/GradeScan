@@ -17,9 +17,9 @@ export default function FacultySignup() {
     defaultValues: { fullName: "", email: "", password: "" },
   });
 
-  async function onFacultySignupSubmit(data) {
+  async function onFacultySignupSubmit(data) { //this function is called when the Create account button is clicked
   try {
-    const response = await facultySignupAxiosFunction(data);
+    const response = await facultySignupAxiosFunction(data); //is se data ko backend me bhej rahe hain
     console.log("Teacher registered", response.data);
   } catch (error) {
     console.log("Signup failed", error);

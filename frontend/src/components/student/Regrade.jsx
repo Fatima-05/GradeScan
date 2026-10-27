@@ -18,9 +18,9 @@ export default function Regrade() {
     defaultValues: { registrationNumber: "", quiz: "AI Quiz (Set-C)", questionNumber: undefined, reason: "" },
   });
 
-  async function onRegradeSubmit(data) {
+  async function onRegradeSubmit(data) { //this function is called when the Send request button is clicked
     try {
-      const response = await regradeAxiosFunction(data);
+      const response = await regradeAxiosFunction(data); //is se data ko backend me bhej rahe hain
       console.log("Regrade request sent", response.data);
     } catch (error) {
       console.log("Regrade failed", error);

@@ -19,9 +19,9 @@ export default function StudentSignup() {
     defaultValues: { fullName: "", email: "", registrationNumber: "", password: "" },
   });
 
-  async function onStudentSignupSubmit(data) {
+  async function onStudentSignupSubmit(data) { //this function is called when the Create account button is clicked
     try {
-      const response = await studentSignupAxiosFunction(data);
+      const response = await studentSignupAxiosFunction(data); //is se data ko backend me bhej rahe hain
       console.log("Student registered", response.data);
     } catch (error) {
       console.log("Signup failed", error);

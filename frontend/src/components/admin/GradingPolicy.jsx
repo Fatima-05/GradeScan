@@ -37,9 +37,9 @@ export default function GradingPolicy() {
     },
   });
 
-  async function onGradingPolicySubmit(data) {
+  async function onGradingPolicySubmit(data) { //this function is called when the Save defaults button is clicked
     try {
-      const response = await gradingPolicyAxiosFunction(data);
+      const response = await gradingPolicyAxiosFunction(data); //is se data ko backend me bhej rahe hain
       console.log("Grading policy saved", response.data);
     } catch (error) {
       console.log("Grading policy failed", error);

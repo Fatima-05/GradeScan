@@ -10,6 +10,7 @@ import mongoose from "mongoose";
    denormalised (copied from the Student/Quiz at grading time) so the lists can
    render without a join/populate; `quiz` keeps the real ObjectId ref to the
    Quiz record so grading can read its answer key (q1–q16). */
+   
 const resultSchema = new mongoose.Schema({
   registrationNumber: { type: String, required: true },
   studentName: { type: String },

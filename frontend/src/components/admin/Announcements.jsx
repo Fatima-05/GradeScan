@@ -9,10 +9,10 @@ const announcementSchema = z.object({
   audience: z.enum(["everyone", "teachers", "students"]),
 });
 
-const initialAnnouncements = [
+const initialAnnouncements = [ 
   { message: "Midterm schedule is now live.", date: "25 Sep 2026", audience: "Everyone" },
   { message: "GradeScan maintenance Sunday 2 AM.", date: "22 Sep 2026", audience: "Teachers" },
-];
+]; // Mock data for initial announcements; in a real app, this would come from a GET request to the backend
 
 /* Announcements: compose box + list. The compose form validates with
    react-hook-form + zod; posting and deleting go to the backend. The past-
@@ -25,11 +25,12 @@ export default function Announcements() {
     defaultValues: { message: "", audience: "everyone" },
   });
 
-  const [announcements, setAnnouncements] = useState(initialAnnouncements);
+  const [announcements, setAnnouncements] = useState(initialAnnouncements); 
+  //this state holds the list of past announcements; in a real app, this would come from a GET request to the backend
 
   async function onAnnouncementSubmit(data) {
     try {
-      const response = await announcementAxiosFunction(data);
+      const response = await announcementAxiosFunction(data); //is se data ko backend me bhej rahe hain
       console.log("Announcement posted", response.data);
     } catch (error) {
       console.log("Announcement failed", error);
@@ -38,9 +39,9 @@ export default function Announcements() {
 
   async function onAnnouncementDelete(message) {
     try {
-      const response = await deleteAnnouncementAxiosFunction({ message: message });
+      const response = await deleteAnnouncementAxiosFunction({ message: message }); //is se message ko backend me bhej rahe hain jahan isay match karke delete karna hai
       console.log("Announcement deleted", response.data);
-      setAnnouncements((prev) => prev.filter((a) => a.message !== message));
+      setAnnouncements((prev) => prev.filter((a) => a.message !== message)); //is se UI se remove kar rahe hain through filter function, jo message ko match karke remove kar deta hai
     } catch (error) {
       console.log("Delete failed", error);
     }
