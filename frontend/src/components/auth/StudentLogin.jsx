@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { studentLoginAxiosFunction } from "../../service/api";
 
 const studentLoginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
@@ -10,13 +11,24 @@ const studentLoginSchema = z.object({
 
 /* Student — Log in. Pills and toggle are <Link>s to the other auth pages. */
 export default function StudentLogin() {
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: zodResolver(studentLoginSchema),
-    defaultValues: { email: "", password: "" },
+  const navigate = useNavigate(); // ye hook react-router-dom ka use karke navigate function ko get karega, jisse user ko login hone ke baad student dashboard pe le jaa sakte hain
+
+  const { register, handleSubmit, formState: { errors } } = useForm({ // ye hook react-hook-form ka use karke form ke liye register, handleSubmit aur errors ko get karega
+
+    resolver: zodResolver(studentLoginSchema), // ye line zodResolver ko use karke studentLoginSchema ko form ke liye validate karega
+
+    defaultValues: { email: "", password: "" }, // ye line form ke liye default values ko set karegi, jisme email aur password empty string honge
   });
 
-  function onStudentLoginSubmit(data) {
-    console.log("Student login submitted", data);
+  async function onStudentLoginSubmit(data) {
+    try {
+      const response = await studentLoginAxiosFunction(data); // data ko backend pe bhej rahe hain
+      console.log("Student logged in", response.data);
+      navigate("/student"); // agar user exist karta hai tou student dashboard pe le jao
+    } catch (error) {
+      console.log("Student login failed", error.response?.data || error);
+      alert(error.response?.data || "Login failed"); // user ko dikhana k user nahi mila
+    }
   }
 
   return (

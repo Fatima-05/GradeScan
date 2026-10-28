@@ -23,3 +23,12 @@ export const classSectionRemoveController = (req, res) => {
     })
     .catch((error) => res.status(500).send("Error removing class: " + error)); // is function ko frontend ke ClassSection.jsx component se call kiya jayega jab user class remove form submit karega. Ye function backend ke /classSection route pe DELETE request bhejega aur data ko delete karega.
 };
+
+export const classSectionGetController = async (req, res) => {
+  try {
+    const classSections = await ClassSection.find();
+    res.json(classSections);
+  } catch (error) {
+    res.status(500).send("Error fetching class sections: " + error);
+  }
+};

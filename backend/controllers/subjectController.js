@@ -27,3 +27,12 @@ export const subjectRemoveController = (req, res) => {
     })
     .catch((error) => res.status(500).send("Error removing subject: " + error));
 }; // is function ko frontend ke Subject.jsx component se call kiya jayega jab user subject remove form submit karega. Ye function backend ke /subject route pe DELETE request bhejega aur data ko delete karega.
+
+export const subjectGetController = async (req, res) => {
+  try {
+    const subjects = await Subject.find();
+    res.json(subjects);
+  } catch (error) {
+    res.status(500).send("Error fetching subjects: " + error);
+  }
+};

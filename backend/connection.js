@@ -4,6 +4,9 @@ import mongoose from "mongoose";
 import cors from "cors";
 import facultySignuRoutes from "./routes/facultySignupRoutes.js";
 import studentSignupRoutes from "./routes/studentSignupRoutes.js";
+import facultyLoginRoutes from "./routes/facultyLoginRoutes.js";
+import adminLoginRoutes from "./routes/adminLoginRoutes.js";
+import studentLoginRoutes from "./routes/studentLoginRoutes.js";
 import quizRoutes from "./routes/quizRoutes.js";
 import announcementRoutes from "./routes/announcementRoutes.js";
 import classSectionRoutes from "./routes/classSectionRoutes.js";
@@ -21,6 +24,9 @@ app.use(express.json()); //jb actual data hota hai tou usko unpack kr k read krn
 
 app.use("/signup", facultySignuRoutes); // jb frontend se signup ka request ayega tou yeh route handle karega aur console mei message print karega
 app.use("/signup/student", studentSignupRoutes);
+app.use("/login", facultyLoginRoutes);
+app.use("/login/admin", adminLoginRoutes);
+app.use("/login/student", studentLoginRoutes);
 app.use("/quizzes", quizRoutes);
 app.use("/announcements", announcementRoutes);
 app.use("/class_sections", classSectionRoutes);
@@ -28,6 +34,48 @@ app.use("/subjects", subjectRoutes);
 app.use("/grading_policy", gradingPolicyRoutes);
 app.use("/regrades", regradeRoutes);
 app.use("/teachers", teacherRoutes);
+
+// GET routes for lists (minimal)
+app.get("/students", async (req, res) => { // ye route backend ke /students route pe GET request handle karega aur database se students ka data fetch karega aur response ko send karega
+  try {
+    const Student = (await import("./models/student.js")).default; // ye line student model ko import karegi, jisse database se students ka data fetch karne ke liye use kiya jayega
+
+    const students = await Student.find();
+    res.json(students); // ye line students ka data response ke form mei send karegi, jisse frontend pe receive kiya jayega
+  } catch (error) {
+    res.status(500).send("Error fetching students: " + error);
+  }
+});
+
+app.get("/regrades/teacher", async (req, res) => {
+  try {
+    const Regrade = (await import("./models/regrade.js")).default;
+    const regrades = await Regrade.find({ status: "pending" });
+    res.json(regrades);
+  } catch (error) {
+    res.status(500).send("Error fetching regrades: " + error);
+  }
+});
+
+app.get("/regrades/student", async (req, res) => {
+  try {
+    const Regrade = (await import("./models/regrade.js")).default;
+    const regrades = await Regrade.find();
+    res.json(regrades);
+  } catch (error) {
+    res.status(500).send("Error fetching regrades: " + error);
+  }
+});
+
+app.get("/grades", async (req, res) => {
+  try {
+    const Result = (await import("./models/result.js")).default;
+    const grades = await Result.find();
+    res.json(grades);
+  } catch (error) {
+    res.status(500).send("Error fetching grades: " + error);
+  }
+});
 
 const PORT = process.env.PORT || 3000; // backend server ka port number define krne k liye
 

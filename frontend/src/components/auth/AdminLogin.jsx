@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminLoginAxiosFunction } from "../../service/api";
 
 const adminLoginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
@@ -10,13 +11,21 @@ const adminLoginSchema = z.object({
 
 /* Admin — Log in. Pills route to the other roles. Admin has no sign up. */
 export default function AdminLogin() {
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: zodResolver(adminLoginSchema),
+  const navigate = useNavigate();
+  const { register, handleSubmit, formState: { errors } } = useForm({ 
+    resolver: zodResolver(adminLoginSchema), 
     defaultValues: { email: "", password: "" },
   });
 
-  function onAdminLoginSubmit(data) {
-    console.log("Admin login submitted", data);
+  async function onAdminLoginSubmit(data) { // ye function form ke onSubmit event ke liye hai, jisme user admin login karega. Ye function admin login ko backend pe send karega aur response ko receive karega
+    try {
+      const response = await adminLoginAxiosFunction(data); // data ko backend pe bhej rahe hain
+      console.log("Admin logged in", response.data);
+      navigate("/admin"); // agar user exist karta hai tou admin dashboard pe le jao
+    } catch (error) {
+      console.log("Admin login failed", error.response?.data || error);
+      alert(error.response?.data || "Login failed"); // user ko dikhana k user nahi mila
+    }
   }
 
   return (

@@ -1,37 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { announcementAxiosFunction, deleteAnnouncementAxiosFunction } from "../../service/api";
+import { announcementAxiosFunction, deleteAnnouncementAxiosFunction, getAnnouncementsAxiosFunction } from "../../service/api";
 
 const announcementSchema = z.object({
   message: z.string().min(1, "Notice is required").min(5, "Notice must be at least 5 characters").max(300, "Notice must be at most 300 characters"),
   audience: z.enum(["everyone", "teachers", "students"]),
 });
 
-const initialAnnouncements = [ 
-  { message: "Midterm schedule is now live.", date: "25 Sep 2026", audience: "Everyone" },
-  { message: "GradeScan maintenance Sunday 2 AM.", date: "22 Sep 2026", audience: "Teachers" },
-]; // Mock data for initial announcements; in a real app, this would come from a GET request to the backend
-
 /* Announcements: compose box + list. The compose form validates with
    react-hook-form + zod; posting and deleting go to the backend. The past-
-   announcements list is local state so a successful delete removes the card
-   from the UI. The DB change is visible in Compass; the UI can't refresh
-   without a GET, so a newly posted announcement is NOT added to the list. */
+   announcements list is fetched from the backend on mount and re-fetched
+   after a successful post for auto-refresh. Delete uses local filter for
+   instant UI update. */
 export default function Announcements() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(announcementSchema),
     defaultValues: { message: "", audience: "everyone" },
   });
 
-  const [announcements, setAnnouncements] = useState(initialAnnouncements); 
-  //this state holds the list of past announcements; in a real app, this would come from a GET request to the backend
+  const [announcements, setAnnouncements] = useState([]);
+
+  async function fetchAnnouncements() {
+    try {
+      const result = await getAnnouncementsAxiosFunction();
+      const returnedProductData = result.data;
+      setAnnouncements(returnedProductData);
+    } catch (error) {
+      console.log("Failed to fetch announcements", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
 
   async function onAnnouncementSubmit(data) {
     try {
       const response = await announcementAxiosFunction(data); //is se data ko backend me bhej rahe hain
       console.log("Announcement posted", response.data);
+      fetchAnnouncements(); // re-fetch after posting so the new announcement appears
     } catch (error) {
       console.log("Announcement failed", error);
     }
@@ -67,13 +76,13 @@ export default function Announcements() {
           </form>
         </div>
       </div>
-      {/* Past announcements: rendered from local state; delete removes on success */}
+      {/* Past announcements: rendered from DB via GET; delete removes on success */}
       {announcements.length === 0 ? (
         <div className="alert alert-success">No announcements.</div>
       ) : (
         <div className="row g-4">
           {announcements.map((a) => (
-            <div className="col-md-6" key={a.message}>
+            <div className="col-md-6" key={a._id || a.message}>
               <div className="card h-100">
                 <div className="card-body">
                   <div className="d-flex justify-content-between">

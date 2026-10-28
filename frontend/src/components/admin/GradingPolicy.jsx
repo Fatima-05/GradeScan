@@ -1,7 +1,8 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { gradingPolicyAxiosFunction } from "../../service/api";
+import { gradingPolicyAxiosFunction, getGradingPolicyAxiosFunction } from "../../service/api";
 
 const gradingPolicySchema = z.object({
   negative: z.number({ error: "Negative marking is required" }).min(0, "Negative marking cannot be negative").max(1, "Negative marking must be at most 1"),
@@ -17,10 +18,9 @@ const gradingPolicySchema = z.object({
   gradeD: z.number({ error: "Grade D is required" }).min(0, "Minimum is 0").max(100, "Maximum is 100"),
 });
 
-/* Grading Policy: editable defaults (DB later). The form validates with
-   react-hook-form + zod; values prefill from useForm defaultValues. */
+/* Grading Policy: editable defaults fetched from DB. */
 export default function GradingPolicy() {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: zodResolver(gradingPolicySchema),
     defaultValues: {
       negative: 0.25,
@@ -36,6 +36,33 @@ export default function GradingPolicy() {
       gradeD: 50,
     },
   });
+
+  async function fetchPolicy() {
+    try {
+      const result = await getGradingPolicyAxiosFunction();
+      if (result.data) {
+        reset({
+          negative: result.data.negative ?? 0.25,
+          passing: result.data.passing ?? 40,
+          gradeA: result.data.gradeA ?? 90,
+          gradeAm: result.data.gradeAm ?? 85,
+          gradeBp: result.data.gradeBp ?? 80,
+          gradeB: result.data.gradeB ?? 75,
+          gradeBm: result.data.gradeBm ?? 70,
+          gradeCp: result.data.gradeCp ?? 65,
+          gradeC: result.data.gradeC ?? 60,
+          gradeCm: result.data.gradeCm ?? 55,
+          gradeD: result.data.gradeD ?? 50,
+        });
+      }
+    } catch (error) {
+      console.log("Failed to fetch grading policy", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchPolicy();
+  }, []);
 
   async function onGradingPolicySubmit(data) { //this function is called when the Save defaults button is clicked
     try {

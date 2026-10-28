@@ -1,7 +1,8 @@
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { quizAxiosFunction } from "../../service/api";
+import { quizAxiosFunction, getQuizzesAxiosFunction } from "../../service/api";
 
 const quizSchema = z.object({
   title: z.string().min(1, "Quiz title is required").min(3, "Quiz title must be at least 3 characters").max(40, "Quiz title must be at most 40 characters"),
@@ -28,9 +29,7 @@ const quizSchema = z.object({
   q16: z.enum(["A", "B", "C", "D"]),
 });
 
-/* Quizzes: a creator form + the teacher's quiz cards. The 16 answer-key
-   selects are written out one by one (Q1–Q8, Q9–Q16). The form validates
-   with react-hook-form + zod; the sheet download is a placeholder for the QR. */
+/* Quizzes: a creator form + the teacher's quiz cards. */
 export default function Quizzes() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(quizSchema),
@@ -48,10 +47,28 @@ export default function Quizzes() {
     },
   });
 
+  const [quizzes, setQuizzes] = useState([]); // is state variable mei quizzes ka data store hoga jo backend se fetch kiya jayega
+
+  async function fetchQuizzes() {
+    try {  // ye function backend se quizzes ka data fetch karega aur state variable mei store karega
+      const result = await getQuizzesAxiosFunction(); // ye function backend ke /quizzes route pe GET request bhejega aur data ko receive karega
+
+      setQuizzes(result.data || []);// agar result.data exist karta hai tou usko setQuizzes mei store karo, warna empty array store karo
+      
+    } catch (error) {
+      console.log("Failed to fetch quizzes", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
+
   async function onQuizSubmit(data) { //this function is called when the Create quiz button is clicked
     try {
       const response = await quizAxiosFunction(data); //is se data ko backend me bhej rahe hain
       console.log("Quiz created", response.data);
+      fetchQuizzes();
     } catch (error) {
       console.log("Quiz failed", error);
     }
@@ -208,41 +225,30 @@ export default function Quizzes() {
         </div>
       </div>
 
-      {/* Quiz list: hard-coded cards */}
+      {/* Quiz list */}
       <h4 className="mb-3">Your quizzes</h4>
-      <div className="row g-4">
-        {/* Quiz 1 */}
-        <div className="col-md-6">
-          <div className="card h-100">
-            <div className="card-body">
-              <h6 className="card-title">
-                AI Quiz <span className="badge bg-secondary">Set-C</span>
-              </h6>
-              <small className="text-muted">BSE-4A · AI · 16 questions · 30 min</small>
-              <div className="d-flex justify-content-between align-items-center mt-2">
-                <small className="text-muted">Neg: 0 · 16 questions</small>
-                {/* Sheet download: placeholder for the QR sheet */}
-                <a href="#" className="btn btn-warning btn-sm">Download sheet</a>
+      {quizzes.length === 0 ? (
+        <div className="alert alert-success">No quizzes yet.</div>
+      ) : (
+        <div className="row g-4">
+          {quizzes.map((q, idx) => (
+            <div className="col-md-6" key={q._id || idx}>
+              <div className="card h-100">
+                <div className="card-body">
+                  <h6 className="card-title">
+                    {q.title} <span className="badge bg-secondary">{q.set}</span>
+                  </h6>
+                  <small className="text-muted">{q.className} · {q.subject} · 16 questions · 30 min</small>
+                  <div className="d-flex justify-content-between align-items-center mt-2">
+                    <small className="text-muted">Neg: {q.negative}</small>
+                    <a href="#" className="btn btn-warning btn-sm">Download sheet</a>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
-        {/* Quiz 2 */}
-        <div className="col-md-6">
-          <div className="card h-100">
-            <div className="card-body">
-              <h6 className="card-title">
-                AI Quiz <span className="badge bg-secondary">Set-A</span>
-              </h6>
-              <small className="text-muted">BSE-4A · AI · 16 questions · 30 min</small>
-              <div className="d-flex justify-content-between align-items-center mt-2">
-                <small className="text-muted">Neg: 0.25 · 16 questions</small>
-                <a href="#" className="btn btn-warning btn-sm">Download sheet</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </>
   );
 }

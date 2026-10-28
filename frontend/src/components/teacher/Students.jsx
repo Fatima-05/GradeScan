@@ -1,12 +1,30 @@
-/* Students: roster of everyone whose Reg# has appeared on a graded sheet.
-   This is the same data that later gates student self-signup. */
+import { useState, useEffect } from "react";
+import { getStudentsAxiosFunction } from "../../service/api";
+
+/* Students: roster fetched from DB. */
 export default function Students() {
+  const [students, setStudents] = useState([]);
+  // is state variable mei students ka data store hoga jo backend se fetch kiya jayega
+
+  async function fetchStudents() {
+    try {
+      const result = await getStudentsAxiosFunction(); // ye function backend ke /students route pe GET request bhejega aur data ko receive karega
+      setStudents(result.data || []); // agar result.data exist karta hai tou usko setStudents mei store karo, warna empty array store karo
+    } catch (error) {
+      console.log("Failed to fetch students", error);
+    }
+  }
+
+  useEffect(() => { // ye hook component ke mount hone ke baad call hoga, aur fetchStudents function ko call karega
+    fetchStudents(); // ye function backend se students ka data fetch karega aur state variable mei store karega
+  }, []);
+
   return (
     <>
       <h2 className="mb-1">Students</h2>
-      <p className="text-muted mb-4">Known students — discovered from graded sheets.</p>
+      <p className="text-muted mb-4">Known students.</p>
 
-      {/* Search: placeholder — filters when a DB is attached */}
+      {/* Search: placeholder */}
       <div className="mb-3" style={{ maxWidth: "320px" }}>
         <input className="form-control" type="search" placeholder="Search name or Reg#…" />
       </div>
@@ -23,33 +41,22 @@ export default function Students() {
               </tr>
             </thead>
             <tbody>
-              {/* Student 1 */}
-              <tr>
-                <td>Ayesha Khan</td>
-                <td>FA24-BSE-100</td>
-                <td>BSE-4A</td>
-                <td>
-                  <span className="badge bg-secondary">On file</span>
-                </td>
-              </tr>
-              {/* Student 2 */}
-              <tr>
-                <td>Bilal Ahmed</td>
-                <td>FA24-BSE-101</td>
-                <td>BSE-4A</td>
-                <td>
-                  <span className="badge bg-secondary">On file</span>
-                </td>
-              </tr>
-              {/* Student 3 */}
-              <tr>
-                <td>Ansa Irshad</td>
-                <td>FA24-BSE-102</td>
-                <td>BSE-4A</td>
-                <td>
-                  <span className="badge bg-secondary">On file</span>
-                </td>
-              </tr>
+              {students.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="text-center text-muted">No students.</td>
+                </tr>
+              ) : (
+                students.map((s, idx) => (
+                  <tr key={s._id || idx}>
+                    <td>{s.fullName || s.name}</td>
+                    <td>{s.registrationNumber || s.regNo || s.regNumber}</td>
+                    <td>{s.className || s.class || "-"}</td>
+                    <td>
+                      <span className="badge bg-secondary">On file</span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

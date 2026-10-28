@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { facultyLoginAxiosFunction } from "../../service/api";
 
 const facultyLoginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
@@ -9,14 +10,23 @@ const facultyLoginSchema = z.object({
 });
 
 /* Faculty — Log in. Pills and toggle are <Link>s to the other auth pages. */
-export default function FacultyLogin() {
+export default function FacultyLogin() { 
+  const navigate = useNavigate(); // ye hook react-router-dom ka use karke navigate function ko get karega, jisse user ko login hone ke baad teacher dashboard pe le jaa sakte hain
+
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(facultyLoginSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  function onFacultyLoginSubmit(data) {
-    console.log("Faculty login submitted", data);
+  async function onFacultyLoginSubmit(data) { // ye function form ke onSubmit event ke liye hai, jisme user faculty login karega. Ye function faculty login ko backend pe send karega aur response ko receive karega
+    try {
+      const response = await facultyLoginAxiosFunction(data); // data ko backend pe bhej rahe hain
+      console.log("Faculty logged in", response.data);
+      navigate("/teacher"); // agar user exist karta hai tou teacher dashboard pe le jao
+    } catch (error) {
+      console.log("Faculty login failed", error.response?.data || error);
+      alert(error.response?.data || "Login failed"); // user ko dikhana k user nahi mila
+    }
   }
 
   return (

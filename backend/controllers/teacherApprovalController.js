@@ -25,3 +25,12 @@ export const teacherDeclineController = (req, res) => {
     .catch((error) => res.status(500).send("Error declining teacher: " + error));
   // is function ko frontend ke TeacherApproval.jsx component se call kiya jayega jab user teacher decline form submit karega. Ye function backend ke /teacherDecline route pe DELETE request bhejega aur data ko delete karega.
 };
+
+export const pendingTeachersGetController = async (req, res) => {
+  try {
+    const teachers = await Faculty.find({ status: "pending" });
+    res.json(teachers);
+  } catch (error) {
+    res.status(500).send("Error fetching pending teachers: " + error);
+  }
+};

@@ -10,3 +10,12 @@ export const quizController = (req, res) => {
     .catch((error) => res.status(500).send("Error adding quiz: " + error));
 };
 // is function ko frontend ke Quiz.jsx component se call kiya jayega jab user quiz form submit karega. Ye function backend ke /quiz route pe POST request bhejega aur data ko send karega.
+
+export const quizGetController = async (req, res) => {
+  try {
+    const quizzes = await Quiz.find();
+    res.json(quizzes);
+  } catch (error) {
+    res.status(500).send("Error fetching quizzes: " + error);
+  }
+};

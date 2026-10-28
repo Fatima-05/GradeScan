@@ -25,3 +25,12 @@ export const announcementDeleteController = (req, res) => {
     .catch((error) => res.status(500).send("Error deleting announcement: " + error));
 };
 // is function ko frontend ke Announcement.jsx component se call kiya jayega jab user announcement delete karega. Ye function backend ke /announcement route pe DELETE request bhejega aur data ko delete karega.
+
+export const announcementGetController = async (req, res) => {
+  try {
+    const announcements = await Announcement.find();
+    res.json(announcements);
+  } catch (error) {
+    res.status(500).send("Error fetching announcements: " + error);
+  }
+};

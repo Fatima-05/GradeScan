@@ -1,6 +1,7 @@
 import Faculty from "../models/faculty.js";
 
-export const facultySignupController = (req, res) => {
+export const facultySignupController = (req, res) => { // ye function backend ke /signup route pe POST request handle karega aur console mei message print karega. Ye function define karta hai ki faculty ka data kaise store hoga MongoDB database mei.
+  
   const { fullName, email, password } = req.body; // is se frontend se signup ka request ayega tou yeh route handle karega aur console mei message print karega. Ye function backend ke /signup route pe POST request bhejne k liye use hoga. Ye function define karta hai ki faculty ka data kaise store hoga MongoDB database mei.
 
   const newFaculty = new Faculty({
