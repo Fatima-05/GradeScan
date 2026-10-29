@@ -9,9 +9,8 @@ const regradeSchema = new mongoose.Schema({
   teacherNote: { type: String, default: "" },
   decidedAt: { type: Date },
 });
-// is schema ko backend ke /regrade route pe POST request bhejne k liye use kiya jayega. Ye schema define karta hai ki regrade ka data kaise store hoga MongoDB database mei.
+// Ye schema define karta hai ki regrade ka data kaise store hoga MongoDB database mei.
 
 const Regrade = mongoose.model("Regrade", regradeSchema);
-// is se Regrade model create hoga jo backend ke /regrade route pe POST request bhejne k liye use hoga. Ye model define karta hai ki regrade ka data kaise store hoga MongoDB database mei.
 
 export default Regrade;

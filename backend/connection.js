@@ -17,12 +17,13 @@ import teacherRoutes from "./routes/teacherRoutes.js";
 // import facultySignupController from "./controllers/facultySignupController.js";
 
 const app = express(); // is se express ka instance create hoga jo backend server k liye use hoga
+
 app.use(cors()); //backend aur frontend server k dermeyan connection bananay k liye
+
 app.use(express.json()); //jb actual data hota hai tou usko unpack kr k read krne k liye yeh use hoga
 
-// app.post("/signup", facultySignupController); // jb frontend se signup ka request ayega tou yeh route handle karega aur console mei message print karega
 
-app.use("/signup", facultySignuRoutes); // jb frontend se signup ka request ayega tou yeh route handle karega aur console mei message print karega
+app.use("/signup", facultySignuRoutes);
 app.use("/signup/student", studentSignupRoutes);
 app.use("/login", facultyLoginRoutes);
 app.use("/login/admin", adminLoginRoutes);

@@ -1,15 +1,4 @@
 import mongoose from "mongoose";
-
-/* Result: the outcome of grading one student's answer sheet for one quiz.
-   Created at the end of the upload→review→grade pipeline (not wired yet —
-   no route or controller uses this model, so it is inert until that pipeline
-   is allowed). One Result per student per quiz.
-
-   Both the teacher Results screen and the student Grades screen render
-   straight from these fields. `studentName`, `quizTitle` and `set` are
-   denormalised (copied from the Student/Quiz at grading time) so the lists can
-   render without a join/populate; `quiz` keeps the real ObjectId ref to the
-   Quiz record so grading can read its answer key (q1–q16). */
    
 const resultSchema = new mongoose.Schema({
   registrationNumber: { type: String, required: true },
@@ -21,7 +10,6 @@ const resultSchema = new mongoose.Schema({
   className: { type: String },
   subject: { type: String },
 
-  // Per-question outcome: ✓ correct, ✗ wrong, – blank. Q1–Q16 in order.
   answers: [
     {
       questionNumber: Number,
@@ -29,6 +17,7 @@ const resultSchema = new mongoose.Schema({
       status: { type: String, enum: ["correct", "wrong", "blank"] },
     },
   ],
+  
   correctCount: { type: Number, required: true },
   wrongCount: { type: Number, required: true },
   blankCount: { type: Number, required: true },

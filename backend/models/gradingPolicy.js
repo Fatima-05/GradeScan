@@ -13,9 +13,8 @@ const gradingPolicySchema = new mongoose.Schema({
   gradeCm: { type: Number, required: true },
   gradeD: { type: Number, required: true },
 });
-// is schema ko backend ke /gradingPolicy route pe POST request bhejne k liye use kiya jayega. Ye schema define karta hai ki grading policy ka data kaise store hoga MongoDB database mei.
+// Ye schema define karta hai ki grading policy ka data kaise store hoga MongoDB database mei.
 
 const GradingPolicy = mongoose.model("GradingPolicy", gradingPolicySchema);
-// is se GradingPolicy model create hoga jo backend ke /gradingPolicy route pe POST request bhejne k liye use hoga. Ye model define karta hai ki grading policy ka data kaise store hoga MongoDB database mei.
 
 export default GradingPolicy;

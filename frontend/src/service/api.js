@@ -10,6 +10,7 @@ export async function facultySignupAxiosFunction(data){
 export async function studentSignupAxiosFunction(data) {
   console.log("studentSignupAxiosFunction called");
   return await axios.post(`${API_URL}/signup/student`, data); // is function ko frontend ke StudentSignup.jsx component se call kiya jayega jab user signup form submit karega. Ye function backend ke /signup/student route pe POST request bhejega aur data ko send karega.
+  //yeh backend ki file frontend/src/service/api.js me likhi gayi hai. Ye function backend ke /signup/student route pe POST request bhejega aur data ko send karega.
 }
 
 export async function quizAxiosFunction(data) {

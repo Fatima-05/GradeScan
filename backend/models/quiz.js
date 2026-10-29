@@ -24,9 +24,8 @@ const quizSchema = new mongoose.Schema({
   q15: { type: String, required: true },
   q16: { type: String, required: true },
 });
-// is schema ko backend ke /quiz route pe POST request bhejne k liye use kiya jayega. Ye schema define karta hai ki quiz ka data kaise store hoga MongoDB database mei.
+// Ye schema define karta hai ki quiz ka data kaise store hoga MongoDB database mei.
 
 const Quiz = mongoose.model("Quiz", quizSchema);
-// is se Quiz model create hoga jo backend ke /quiz route pe POST request bhejne k liye use hoga. Ye model define karta hai ki quiz ka data kaise store hoga MongoDB database mei.
 
 export default Quiz;

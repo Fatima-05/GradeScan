@@ -41,8 +41,9 @@ export default function ClassesSubjects() { //this component is for managing cla
     }
   }
 
-  useEffect(() => {
-    fetchData();
+  useEffect(() => { //useEffect use hota hai jb component mount hota hai tou fetchData function ko call karega jisse classes aur subjects ka data backend se fetch hoga aur state mei set hoga
+
+    fetchData(); // yeh function backend se classes aur subjects ka data fetch karega aur state mei set karega
   }, []);
 
   async function onClassSubmit(data) { //this function is called when the Add button for classes is clicked
