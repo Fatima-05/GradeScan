@@ -10,7 +10,10 @@ export const studentLoginController = async (req, res) => {
       return res.status(404).send("User not found");
     }
 
-    // abhi sirf existence check kar rahe hain
+    if (student.password !== password) {
+      return res.status(401).send("Incorrect password");
+    }
+
     res.status(200).send("Login successful");
   } catch (error) {
     res.status(500).send("Login error: " + error);

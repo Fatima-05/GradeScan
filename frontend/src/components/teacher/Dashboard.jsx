@@ -68,7 +68,7 @@ export default function Dashboard() {
   return (
     <>
       <h2 className="mb-1">Dashboard</h2>
-      <p className="text-muted mb-4">Logged in as faculty · Pending approval for full access.</p>
+      <p className="text-muted mb-4">Logged in as faculty.</p>
 
       <div className="row g-4 mb-4">
         <div className="col-md-3">

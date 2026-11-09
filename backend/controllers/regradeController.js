@@ -3,6 +3,10 @@ import Regrade from "../models/regrade.js";
 export const regradeAddController = (req, res) => {
   const { registrationNumber, quiz, questionNumber, reason } = req.body;
 
+  if (!Number.isInteger(questionNumber) || questionNumber < 1 || questionNumber > 16) {
+    return res.status(400).send("Question number must be between 1 and 16");
+  }
+
   const newRegrade = new Regrade({
     registrationNumber,
     quiz,

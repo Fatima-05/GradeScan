@@ -10,7 +10,14 @@ export const facultyLoginController = async (req, res) => {
       return res.status(404).send("User not found");
     }
 
-    // abhi sirf existence check kar rahe hain
+    if (faculty.password !== password) {
+      return res.status(401).send("Incorrect password");
+    }
+
+    if (faculty.status !== "approved") {
+      return res.status(403).send("Account pending admin approval");
+    }
+
     res.status(200).send("Login successful");
   } catch (error) {
     res.status(500).send("Login error: " + error);
