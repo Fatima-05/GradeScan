@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const studentSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   registrationNumber: { type: String, required: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true, select: false },
 });
 // Ye schema define karta hai ki student ka data kaise store hoga MongoDB database mei.
 

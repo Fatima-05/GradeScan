@@ -1,16 +1,20 @@
+import bcrypt from "bcryptjs";
 import Faculty from "../models/faculty.js";
 
 export const facultyLoginController = async (req, res) => {
   try {
     const { email, password } = req.body; // is se frontend se email aur password ayega
+    const normalizedEmail = (email || "").trim().toLowerCase(); // query karte waqt email ko normalize karte hain
 
-    const faculty = await Faculty.findOne({ email: email }); // is se database mei check karega k koi faculty isi email se exist karta hai ya nahi
+    const faculty = await Faculty.findOne({ email: normalizedEmail }).select("+password"); // password field default select nahi hoti, isliye explicitly mangwate hain
 
     if (!faculty) {
       return res.status(404).send("User not found");
     }
 
-    if (faculty.password !== password) {
+    const passwordMatches = await bcrypt.compare(password, faculty.password); // plain password ko stored hash se compare karte hain
+
+    if (!passwordMatches) {
       return res.status(401).send("Incorrect password");
     }
 
