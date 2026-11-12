@@ -25,6 +25,7 @@ export default function StudentSignup() {
       console.log("Student registered", response.data);
     } catch (error) {
       console.log("Signup failed", error);
+      alert(error.response?.data);
     }
   }
   // JSX for the student signup form, including role tabs, login/signup toggle, and form fields with validation messages

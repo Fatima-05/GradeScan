@@ -23,6 +23,7 @@ export default function FacultySignup() {
     console.log("Teacher registered", response.data);
   } catch (error) {
     console.log("Signup failed", error);
+    alert(error.response?.data);
   }
   } // is function ko frontend ke FacultySignup.jsx component se call kiya jayega jab user signup form submit karega. Ye function backend ke /signup route pe POST request bhejega aur data ko send karega.
 
