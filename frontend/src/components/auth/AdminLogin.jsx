@@ -20,6 +20,8 @@ export default function AdminLogin() {
   async function onAdminLoginSubmit(data) { // ye function form ke onSubmit event ke liye hai, jisme user admin login karega. Ye function admin login ko backend pe send karega aur response ko receive karega
     try {
       const response = await adminLoginAxiosFunction(data); // data ko backend pe bhej rahe hain
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
       console.log("Admin logged in", response.data);
       navigate("/admin"); // agar user exist karta hai tou admin dashboard pe le jao
     } catch (error) {

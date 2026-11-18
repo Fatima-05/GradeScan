@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import Faculty from "../models/faculty.js";
 
 export const facultyLoginController = async (req, res) => {
@@ -22,7 +23,12 @@ export const facultyLoginController = async (req, res) => {
       return res.status(403).send("Account pending admin approval");
     }
 
-    res.status(200).send("Login successful");
+    const token = jwt.sign(
+      { id: faculty._id, email: faculty.email, role: "faculty" },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
+    );
+    res.json({ token, role: "faculty" });
   } catch (error) {
     res.status(500).send("Login error: " + error);
   }

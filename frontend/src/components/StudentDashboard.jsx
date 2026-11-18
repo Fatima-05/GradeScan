@@ -39,7 +39,16 @@ export default function StudentDashboard({ section }) {
         </ul>
         {/* Log out: routed back to the login page */}
         <div className="mt-auto">
-          <Link to="/login" className="nav-link text-white-50">Log out</Link>
+          <Link
+            to="/login"
+            className="nav-link text-white-50"
+            onClick={() => {
+              localStorage.removeItem("token");
+              localStorage.removeItem("role");
+            }}
+          >
+            Log out
+          </Link>
         </div>
       </aside>
 

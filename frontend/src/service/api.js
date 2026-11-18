@@ -1,6 +1,29 @@
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
+// JWT: attach the stored token to every request. Login/signup still work
+// without one, so the interceptor simply skips requests with no token.
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// An expired/invalid token shouldn't leave the UI on a broken page. Skip
+// /login and /signup so a wrong password can still show its alert.
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const url = error.config?.url || "";
+    if (error.response?.status === 401 && !url.includes("/login") && !url.includes("/signup")) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 
 export async function facultySignupAxiosFunction(data){
   console.log("facultySignupAxiosFunction called");

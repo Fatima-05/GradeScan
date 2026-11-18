@@ -1,4 +1,5 @@
 import express from "express";
+import { auth } from "../middleware/auth.js";
 import { classSectionAddController, classSectionRemoveController, classSectionGetController } from "../controllers/classSectionController.js";
 
 const router = express.Router();
@@ -7,10 +8,10 @@ const router = express.Router();
 router.get("/", classSectionGetController);
 // Ye function database se saare classes fetch karke frontend ko bhejega.
 
-router.post("/", classSectionAddController);
+router.post("/", auth("admin"), classSectionAddController);
 //  Ye router define karta hai ki class section ka data kaise add hoga MongoDB database mei.
 
-router.delete("/", classSectionRemoveController);
+router.delete("/", auth("admin"), classSectionRemoveController);
 // Ye router define karta hai ki class section ka data kaise delete hoga MongoDB database mei.
 
 export default router;

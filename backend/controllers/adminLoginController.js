@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import Admin from "../models/admin.js";
 
 export const adminLoginController = async (req, res) => {
@@ -18,7 +19,12 @@ export const adminLoginController = async (req, res) => {
       return res.status(401).send("Incorrect password");
     }
 
-    res.status(200).send("Login successful");
+    const token = jwt.sign(
+      { id: admin._id, email: admin.email, role: "admin" },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
+    );
+    res.json({ token, role: "admin" });
   } catch (error) {
     res.status(500).send("Login error: " + error);
   }

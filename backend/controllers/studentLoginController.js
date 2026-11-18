@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import Student from "../models/student.js";
 
 export const studentLoginController = async (req, res) => {
@@ -18,7 +19,12 @@ export const studentLoginController = async (req, res) => {
       return res.status(401).send("Incorrect password");
     }
 
-    res.status(200).send("Login successful");
+    const token = jwt.sign(
+      { id: student._id, email: student.email, role: "student", registrationNumber: student.registrationNumber },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
+    );
+    res.json({ token, role: "student" });
   } catch (error) {
     res.status(500).send("Login error: " + error);
   }

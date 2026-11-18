@@ -1,4 +1,5 @@
 import express from "express";
+import { auth } from "../middleware/auth.js";
 import { announcementAddController, announcementDeleteController, announcementGetController } from "../controllers/announcementController.js";
 
 const router = express.Router();
@@ -7,10 +8,10 @@ const router = express.Router();
 router.get("/", announcementGetController);
 // Ye function database se saare announcements fetch karke frontend ko bhejega.
 
-router.post("/", announcementAddController);
+router.post("/", auth("admin"), announcementAddController);
 // Ye function define karta hai ki announcement ka data kaise add hoga MongoDB database mei.
 
-router.delete("/", announcementDeleteController);
+router.delete("/", auth("admin"), announcementDeleteController);
 // Ye function define karta hai ki announcement ka data kaise delete hoga MongoDB database mei.
 
 export default router;

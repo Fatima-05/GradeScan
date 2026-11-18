@@ -21,6 +21,8 @@ export default function FacultyLogin() {
   async function onFacultyLoginSubmit(data) { // ye function form ke onSubmit event ke liye hai, jisme user faculty login karega. Ye function faculty login ko backend pe send karega aur response ko receive karega
     try {
       const response = await facultyLoginAxiosFunction(data); // data ko backend pe bhej rahe hain
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
       console.log("Faculty logged in", response.data);
       navigate("/teacher"); // agar user exist karta hai tou teacher dashboard pe le jao
     } catch (error) {
