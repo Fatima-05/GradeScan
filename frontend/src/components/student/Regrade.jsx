@@ -14,7 +14,7 @@ const regradeSchema = z.object({
 export default function Regrade() {
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: zodResolver(regradeSchema),
-    defaultValues: { registrationNumber: "", quiz: "", questionNumber: undefined, reason: "" },
+    defaultValues: { registrationNumber: localStorage.getItem("registrationNumber") || "", quiz: "", questionNumber: undefined, reason: "" },
   }); 
 
   const [requests, setRequests] = useState([]); // is state variable mei student ke regrade requests ka data store hoga jo backend se fetch kiya jayega
@@ -40,7 +40,7 @@ export default function Regrade() {
 
       if (quizData.length > 0) { // pehli quiz ko default selection banao
         reset({
-          registrationNumber: "",
+          registrationNumber: localStorage.getItem("registrationNumber") || "",
           quiz: `${quizData[0].title} (${quizData[0].set})`,
           questionNumber: undefined,
           reason: "",
@@ -63,7 +63,7 @@ export default function Regrade() {
 
       console.log("Regrade request sent", response.data);
       reset({
-        registrationNumber: "",
+        registrationNumber: localStorage.getItem("registrationNumber") || "",
         quiz: quizzes.length > 0 ? `${quizzes[0].title} (${quizzes[0].set})` : "",
         questionNumber: undefined,
         reason: "",

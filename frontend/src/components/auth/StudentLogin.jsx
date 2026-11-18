@@ -25,6 +25,7 @@ export default function StudentLogin() {
       const response = await studentLoginAxiosFunction(data); // data ko backend pe bhej rahe hain
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
+      localStorage.setItem("registrationNumber", response.data.registrationNumber);
       console.log("Student logged in", response.data);
       navigate("/student"); // agar user exist karta hai tou student dashboard pe le jao
     } catch (error) {

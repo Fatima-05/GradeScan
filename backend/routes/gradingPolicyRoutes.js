@@ -5,7 +5,7 @@ import { gradingPolicyController, gradingPolicyGetController } from "../controll
 const router = express.Router();
 // Ye router define karta hai ki grading policy ka data kaise add, update aur view hoga MongoDB database mei.
 
-router.get("/", gradingPolicyGetController);
+router.get("/", auth("admin"), gradingPolicyGetController);
 // Ye function database se grading policy fetch karke frontend ko bhejega.
 
 router.put("/", auth("admin"), gradingPolicyController);

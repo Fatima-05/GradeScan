@@ -5,6 +5,7 @@ const regradeSchema = new mongoose.Schema({
   quiz: { type: String, required: true },
   questionNumber: { type: Number, required: true },
   reason: { type: String, required: true },
+  teacherEmail: { type: String },
   status: { type: String, default: "pending" },
   teacherNote: { type: String, default: "" },
   decidedAt: { type: Date },

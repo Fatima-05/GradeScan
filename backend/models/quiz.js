@@ -23,6 +23,7 @@ const quizSchema = new mongoose.Schema({
   q14: { type: String, required: true },
   q15: { type: String, required: true },
   q16: { type: String, required: true },
+  teacherEmail: { type: String },
 });
 // Ye schema define karta hai ki quiz ka data kaise store hoga MongoDB database mei.
 

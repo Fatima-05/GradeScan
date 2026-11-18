@@ -24,7 +24,7 @@ export const studentLoginController = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
     );
-    res.json({ token, role: "student" });
+    res.json({ token, role: "student", registrationNumber: student.registrationNumber });
   } catch (error) {
     res.status(500).send("Login error: " + error);
   }

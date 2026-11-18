@@ -5,7 +5,7 @@ import { quizController, quizGetController } from "../controllers/quizController
 const router = express.Router();
 // Ye router define karta hai ki quiz ka data kaise add aur view hoga MongoDB database mei.
 
-router.get("/", quizGetController);
+router.get("/", auth(), quizGetController);
 // Ye function database se saare quizzes fetch karke frontend ko bhejega.
 
 router.post("/", auth("faculty"), quizController);

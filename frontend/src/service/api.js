@@ -18,6 +18,7 @@ axios.interceptors.response.use(
     if (error.response?.status === 401 && !url.includes("/login") && !url.includes("/signup")) {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
+      localStorage.removeItem("registrationNumber");
       window.location.href = "/login";
     }
     return Promise.reject(error);

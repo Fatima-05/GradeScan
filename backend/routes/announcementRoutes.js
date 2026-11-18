@@ -5,7 +5,7 @@ import { announcementAddController, announcementDeleteController, announcementGe
 const router = express.Router();
 // Ye router define karta hai ki announcement ka data kaise add, view aur delete hoga MongoDB database mei.
 
-router.get("/", announcementGetController);
+router.get("/", auth(), announcementGetController);
 // Ye function database se saare announcements fetch karke frontend ko bhejega.
 
 router.post("/", auth("admin"), announcementAddController);

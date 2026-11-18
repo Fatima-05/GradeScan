@@ -45,6 +45,7 @@ export default function StudentDashboard({ section }) {
             onClick={() => {
               localStorage.removeItem("token");
               localStorage.removeItem("role");
+              localStorage.removeItem("registrationNumber");
             }}
           >
             Log out

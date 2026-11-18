@@ -14,6 +14,7 @@ import subjectRoutes from "./routes/subjectRoutes.js";
 import gradingPolicyRoutes from "./routes/gradingPolicyRoutes.js";
 import regradeRoutes from "./routes/regradeRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
+import { auth } from "./middleware/auth.js";
 // import facultySignupController from "./controllers/facultySignupController.js";
 
 const app = express(); // is se express ka instance create hoga jo backend server k liye use hoga
@@ -37,7 +38,7 @@ app.use("/regrades", regradeRoutes);
 app.use("/teachers", teacherRoutes);
 
 // GET routes for lists (minimal)
-app.get("/students", async (req, res) => { // ye route backend ke /students route pe GET request handle karega aur database se students ka data fetch karega aur response ko send karega
+app.get("/students", auth("faculty"), async (req, res) => { // ye route backend ke /students route pe GET request handle karega aur database se students ka data fetch karega aur response ko send karega
   try {
     const Student = (await import("./models/student.js")).default; // ye line student model ko import karegi, jisse database se students ka data fetch karne ke liye use kiya jayega
 
@@ -48,30 +49,37 @@ app.get("/students", async (req, res) => { // ye route backend ke /students rout
   }
 });
 
-app.get("/regrades/teacher", async (req, res) => {
+app.get("/regrades/teacher", auth("faculty"), async (req, res) => {
   try {
     const Regrade = (await import("./models/regrade.js")).default;
-    const regrades = await Regrade.find({ status: "pending" });
+    const regrades = await Regrade.find({
+      status: "pending",
+      $or: [
+        { teacherEmail: req.user.email },
+        { teacherEmail: { $exists: false } },
+        { teacherEmail: "" },
+      ],
+    });
     res.json(regrades);
   } catch (error) {
     res.status(500).send("Error fetching regrades: " + error);
   }
 });
 
-app.get("/regrades/student", async (req, res) => {
+app.get("/regrades/student", auth("student"), async (req, res) => {
   try {
     const Regrade = (await import("./models/regrade.js")).default;
-    const regrades = await Regrade.find();
+    const regrades = await Regrade.find({ registrationNumber: req.user.registrationNumber });
     res.json(regrades);
   } catch (error) {
     res.status(500).send("Error fetching regrades: " + error);
   }
 });
 
-app.get("/grades", async (req, res) => {
+app.get("/grades", auth("student"), async (req, res) => {
   try {
     const Result = (await import("./models/result.js")).default;
-    const grades = await Result.find();
+    const grades = await Result.find({ registrationNumber: req.user.registrationNumber });
     res.json(grades);
   } catch (error) {
     res.status(500).send("Error fetching grades: " + error);

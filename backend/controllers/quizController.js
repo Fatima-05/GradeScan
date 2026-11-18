@@ -1,8 +1,11 @@
 import Quiz from "../models/quiz.js";
 
 export const quizController = (req, res) => {
-  // form field names are identical to the schema names, so the body goes straight in
-  const newQuiz = new Quiz(req.body);
+  // Teacher email comes from the verified token, never from the request body
+  const newQuiz = new Quiz({
+    ...req.body,
+    teacherEmail: req.user.email,
+  });
 
   newQuiz
     .save()
@@ -12,7 +15,20 @@ export const quizController = (req, res) => {
 
 export const quizGetController = async (req, res) => {
   try {
-    const quizzes = await Quiz.find();
+    let filter = {};
+
+    if (req.user?.role === "faculty") {
+      // Teachers see their own quizzes; unassigned legacy quizzes stay visible to everyone
+      filter = {
+        $or: [
+          { teacherEmail: req.user.email },
+          { teacherEmail: { $exists: false } },
+          { teacherEmail: "" },
+        ],
+      };
+    }
+
+    const quizzes = await Quiz.find(filter);
     res.json(quizzes);
   } catch (error) {
     res.status(500).send("Error fetching quizzes: " + error);
