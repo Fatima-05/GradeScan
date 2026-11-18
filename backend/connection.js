@@ -54,11 +54,7 @@ app.get("/regrades/teacher", auth("faculty"), async (req, res) => {
     const Regrade = (await import("./models/regrade.js")).default;
     const regrades = await Regrade.find({
       status: "pending",
-      $or: [
-        { teacherEmail: req.user.email },
-        { teacherEmail: { $exists: false } },
-        { teacherEmail: "" },
-      ],
+      teacherEmail: req.user.email,
     });
     res.json(regrades);
   } catch (error) {

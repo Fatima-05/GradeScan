@@ -18,14 +18,8 @@ export const quizGetController = async (req, res) => {
     let filter = {};
 
     if (req.user?.role === "faculty") {
-      // Teachers see their own quizzes; unassigned legacy quizzes stay visible to everyone
-      filter = {
-        $or: [
-          { teacherEmail: req.user.email },
-          { teacherEmail: { $exists: false } },
-          { teacherEmail: "" },
-        ],
-      };
+      // Teachers only see quizzes they own
+      filter = { teacherEmail: req.user.email };
     }
 
     const quizzes = await Quiz.find(filter);
