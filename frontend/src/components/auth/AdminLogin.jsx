@@ -26,7 +26,7 @@ export default function AdminLogin() {
       navigate("/admin"); // agar user exist karta hai tou admin dashboard pe le jao
     } catch (error) {
       console.log("Admin login failed", error.response?.data || error);
-      alert(error.response?.data || "Login failed"); // user ko dikhana k user nahi mila
+      alert(error.response?.data?.error?.message || "Login failed"); // user ko dikhana k user nahi mila
     }
   }
 

@@ -1,24 +1,32 @@
-import jwt from "jsonwebtoken";
+import { verifyAccessToken } from "../utils/tokens.js";
 
-// auth() = any logged-in user; auth("admin") = one role; auth(["admin", "faculty"]) = either role
-export const auth = (roles) => (req, res, next) => {
-  const header = req.headers.authorization || "";
-  const token = header.startsWith("Bearer ") ? header.slice(7) : "";
+// Authentication: "who is calling?" -> 401 when the answer is unknown or invalid.
+export const authenticate = (req, res, next) => {
+  const [scheme, token] = (req.headers.authorization || "").split(" ");
 
-  if (!token) {
-    return res.status(401).send("Not logged in");
+  if (scheme !== "Bearer" || !token) {
+    return res.status(401).json({ error: { message: "Missing or malformed Authorization header" } });
   }
 
   try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ["HS256"] });
-  } catch {
-    return res.status(401).send("Not logged in");
+    const payload = verifyAccessToken(token); // verify(), never decode(), when deciding trust
+    req.user = {
+      id: payload.id,
+      email: payload.email,
+      role: payload.role,
+      registrationNumber: payload.registrationNumber,
+    };
+    next();
+  } catch (error) {
+    const expired = error.name === "TokenExpiredError";
+    res.status(401).json({
+      error: { message: expired ? "Access token expired" : "Invalid access token" },
+    });
   }
-
-  const allowed = roles ? (Array.isArray(roles) ? roles : [roles]) : null;
-  if (allowed && !allowed.includes(req.user.role)) {
-    return res.status(403).send("Not allowed");
-  }
-
-  next();
 };
+
+// Authorization: "may this caller do this?" -> 403 when the answer is no.
+export const authorize = (...roles) => (req, res, next) =>
+  roles.includes(req.user.role)
+    ? next()
+    : res.status(403).json({ error: { message: "Insufficient permissions" } });

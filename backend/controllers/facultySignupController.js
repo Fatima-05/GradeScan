@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import Faculty from "../models/faculty.js";
 
-export const facultySignupController = async (req, res) => { // Ye function define karta hai ki faculty ka data kaise store hoga MongoDB database mei.
+export const facultySignupController = async (req, res, next) => { // Ye function define karta hai ki faculty ka data kaise store hoga MongoDB database mei.
   try {
-    const { fullName, email, password } = req.body; //Ye function define karta hai ki faculty ka data kaise store hoga MongoDB database mei.
+    const { fullName, email, password } = req.body; // Ye function define karta hai ki faculty ka data kaise store hoga MongoDB database mei.
 
     const hashedPassword = await bcrypt.hash(password, 10); // password ko hash karke store karte hain, plain text kabhi save nahi hota
 
@@ -14,11 +14,11 @@ export const facultySignupController = async (req, res) => { // Ye function defi
     }); // is se newFaculty object create hoga
 
     await newFaculty.save();
-    res.status(201).send("Faculty signup request received");
+    res.status(201).json({ data: { message: "Faculty signup request received" } });
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(409).send("Email already registered"); // unique index ki wajah se duplicate email par ye error aata hai
+      return res.status(409).json({ error: { message: "Email already registered" } }); // unique index ki wajah se duplicate email par ye error aata hai
     }
-    res.status(500).send("Error adding faculty: " + error);
+    next(error);
   }
 };

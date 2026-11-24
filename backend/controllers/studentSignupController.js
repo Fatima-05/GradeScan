@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import Student from "../models/student.js";
 
-export const studentSignupController = async (req, res) => {
+export const studentSignupController = async (req, res, next) => {
   try {
     const { fullName, email, registrationNumber, password } = req.body;
     // Ye function define karta hai ki student ka data kaise store hoga MongoDB database mei.
@@ -16,11 +16,11 @@ export const studentSignupController = async (req, res) => {
     }); // is se newStudent object create hoga
 
     await newStudent.save();
-    res.status(201).send("Student added successfully");
+    res.status(201).json({ data: { message: "Student added successfully" } });
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(409).send("Email already registered"); // unique index ki wajah se duplicate email par ye error aata hai
+      return res.status(409).json({ error: { message: "Email already registered" } }); // unique index ki wajah se duplicate email par ye error aata hai
     }
-    res.status(500).send("Error adding student: " + error);
+    next(error);
   }
 };

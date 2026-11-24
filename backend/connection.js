@@ -1,6 +1,5 @@
 import "dotenv/config";
 import express from "express";
-import mongoose from "mongoose";
 import cors from "cors";
 import facultySignuRoutes from "./routes/facultySignupRoutes.js";
 import studentSignupRoutes from "./routes/studentSignupRoutes.js";
@@ -14,15 +13,23 @@ import subjectRoutes from "./routes/subjectRoutes.js";
 import gradingPolicyRoutes from "./routes/gradingPolicyRoutes.js";
 import regradeRoutes from "./routes/regradeRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
-import { auth } from "./middleware/auth.js";
+import { authenticate, authorize } from "./middleware/auth.js";
+import connectDB from "./config/db.js";
+import { notFound, errorHandler } from "./middleware/errors.js";
 // import facultySignupController from "./controllers/facultySignupController.js";
+
+// Fail fast instead of running insecurely, like server.js in the reference.
+for (const key of ["MONGODB_URI", "JWT_SECRET"]) {
+  if (!process.env[key]) {
+    console.error(`Missing environment variable: ${key}`);
+    process.exit(1);
+  }
+}
 
 const app = express(); // is se express ka instance create hoga jo backend server k liye use hoga
 
-app.use(cors()); //backend aur frontend server k dermeyan connection bananay k liye
-
-app.use(express.json()); //jb actual data hota hai tou usko unpack kr k read krne k liye yeh use hoga
-
+app.use(cors({ origin: process.env.CLIENT_ORIGIN || "http://localhost:5173", credentials: true })); // backend aur frontend server k dermeyan connection bananay k liye
+app.use(express.json()); // jb actual data hota hai tou usko unpack kr k read krne k liye yeh use hoga
 
 app.use("/signup", facultySignuRoutes);
 app.use("/signup/student", studentSignupRoutes);
@@ -38,7 +45,7 @@ app.use("/regrades", regradeRoutes);
 app.use("/teachers", teacherRoutes);
 
 // GET routes for lists (minimal)
-app.get("/students", auth("faculty"), async (req, res) => { // ye route backend ke /students route pe GET request handle karega aur database se students ka data fetch karega aur response ko send karega
+app.get("/students", authenticate, authorize("faculty"), async (req, res) => { // ye route backend ke /students route pe GET request handle karega aur database se students ka data fetch karega aur response ko send karega
   try {
     const Student = (await import("./models/student.js")).default; // ye line student model ko import karegi, jisse database se students ka data fetch karne ke liye use kiya jayega
 
@@ -49,7 +56,7 @@ app.get("/students", auth("faculty"), async (req, res) => { // ye route backend 
   }
 });
 
-app.get("/regrades/teacher", auth("faculty"), async (req, res) => {
+app.get("/regrades/teacher", authenticate, authorize("faculty"), async (req, res) => {
   try {
     const Regrade = (await import("./models/regrade.js")).default;
     const regrades = await Regrade.find({
@@ -62,7 +69,7 @@ app.get("/regrades/teacher", auth("faculty"), async (req, res) => {
   }
 });
 
-app.get("/regrades/student", auth("student"), async (req, res) => {
+app.get("/regrades/student", authenticate, authorize("student"), async (req, res) => {
   try {
     const Regrade = (await import("./models/regrade.js")).default;
     const regrades = await Regrade.find({ registrationNumber: req.user.registrationNumber });
@@ -72,7 +79,7 @@ app.get("/regrades/student", auth("student"), async (req, res) => {
   }
 });
 
-app.get("/grades", auth("student"), async (req, res) => {
+app.get("/grades", authenticate, authorize("student"), async (req, res) => {
   try {
     const Result = (await import("./models/result.js")).default;
     const grades = await Result.find({ registrationNumber: req.user.registrationNumber });
@@ -82,14 +89,13 @@ app.get("/grades", auth("student"), async (req, res) => {
   }
 });
 
+app.use(notFound); // 404 for unknown routes
+app.use(errorHandler); // must be registered last
+
 const PORT = process.env.PORT || 3000; // backend server ka port number define krne k liye
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-}); // is se backend server start hoga aur port 3000 pe listen karega
-
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log("MongoDB error:", err));
-// is se backend server MongoDB database se connect hoga aur agar connection successful hoga tou console mei message print karega, agar error aayega tou error message print karega
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}); // pehle MongoDB connect, phir server start

@@ -27,7 +27,7 @@ export default function FacultyLogin() {
       navigate("/teacher"); // agar user exist karta hai tou teacher dashboard pe le jao
     } catch (error) {
       console.log("Faculty login failed", error.response?.data || error);
-      alert(error.response?.data || "Login failed"); // user ko dikhana k user nahi mila
+      alert(error.response?.data?.error?.message || "Login failed"); // user ko dikhana k user nahi mila
     }
   }
 

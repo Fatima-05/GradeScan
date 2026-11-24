@@ -30,7 +30,7 @@ export default function StudentLogin() {
       navigate("/student"); // agar user exist karta hai tou student dashboard pe le jao
     } catch (error) {
       console.log("Student login failed", error.response?.data || error);
-      alert(error.response?.data || "Login failed"); // user ko dikhana k user nahi mila
+      alert(error.response?.data?.error?.message || "Login failed"); // user ko dikhana k user nahi mila
     }
   }
 
