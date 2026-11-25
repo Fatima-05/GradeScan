@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { quizAxiosFunction, getQuizzesAxiosFunction } from "../../service/api";
+import { quizAxiosFunction, getQuizzesAxiosFunction, getClassSectionsAxiosFunction, getSubjectsAxiosFunction } from "../../service/api";
 
 const quizSchema = z.object({
   title: z.string().min(1, "Quiz title is required").min(3, "Quiz title must be at least 3 characters").max(40, "Quiz title must be at most 40 characters"),
   set: z.enum(["Set-A", "Set-B", "Set-C"]),
-  className: z.enum(["BSE-4A", "BSE-4B", "BSCS-3A"]),
-  subject: z.enum(["AI", "Operating Systems", "Databases"]),
+  className: z.string().min(1, "Class is required"),
+  subject: z.string().min(1, "Subject is required"),
   negative: z.number({ error: "Negative marking is required" }).min(0, "Negative marking cannot be negative").max(1, "Negative marking must be at most 1"),
   passing: z.number({ error: "Passing % is required" }).min(0, "Passing % cannot be negative").max(100, "Passing % must be at most 100"),
   q1: z.enum(["A", "B", "C", "D"]),
@@ -31,13 +31,13 @@ const quizSchema = z.object({
 
 /* Quizzes: a creator form + the teacher's quiz cards. */
 export default function Quizzes() {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     resolver: zodResolver(quizSchema),
     defaultValues: {
       title: "",
       set: "Set-A",
-      className: "BSE-4A",
-      subject: "AI",
+      className: "",
+      subject: "",
       negative: 0.25,
       passing: 40,
       q1: "A", q2: "A", q3: "A", q4: "A",
@@ -48,6 +48,8 @@ export default function Quizzes() {
   });
 
   const [quizzes, setQuizzes] = useState([]); // is state variable mei quizzes ka data store hoga jo backend se fetch kiya jayega
+  const [classSections, setClassSections] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
   async function fetchQuizzes() {
     try {  // ye function backend se quizzes ka data fetch karega aur state variable mei store karega
@@ -60,8 +62,26 @@ export default function Quizzes() {
     }
   }
 
+  async function fetchClassSectionsAndSubjects() {
+    try {
+      const [classResult, subjectResult] = await Promise.all([
+        getClassSectionsAxiosFunction(),
+        getSubjectsAxiosFunction(),
+      ]);
+      const classes = classResult.data || [];
+      const subs = subjectResult.data || [];
+      setClassSections(classes);
+      setSubjects(subs);
+      if (classes.length > 0) setValue("className", classes[0].className);
+      if (subs.length > 0) setValue("subject", subs[0].subjectName);
+    } catch (error) {
+      console.log("Failed to fetch classes/subjects", error);
+    }
+  }
+
   useEffect(() => {
     fetchQuizzes();
+    fetchClassSectionsAndSubjects();
   }, []);
 
   async function onQuizSubmit(data) { //this function is called when the Create quiz button is clicked
@@ -100,18 +120,32 @@ export default function Quizzes() {
               <div className="col-md-3">
                 <label className="form-label">Class</label>
                 <select className="form-select" {...register("className")}>
-                  <option>BSE-4A</option>
-                  <option>BSE-4B</option>
-                  <option>BSCS-3A</option>
+                  {classSections.length === 0 ? (
+                    <option value="">No classes found</option>
+                  ) : (
+                    classSections.map((item) => (
+                      <option key={item._id || item.className} value={item.className}>
+                        {item.className}
+                      </option>
+                    ))
+                  )}
                 </select>
+                {errors.className && <span className="text-danger">{errors.className.message}</span>}
               </div>
               <div className="col-md-6">
                 <label className="form-label">Subject</label>
                 <select className="form-select" {...register("subject")}>
-                  <option>AI</option>
-                  <option>Operating Systems</option>
-                  <option>Databases</option>
+                  {subjects.length === 0 ? (
+                    <option value="">No subjects found</option>
+                  ) : (
+                    subjects.map((item) => (
+                      <option key={item._id || item.subjectName} value={item.subjectName}>
+                        {item.subjectName}
+                      </option>
+                    ))
+                  )}
                 </select>
+                {errors.subject && <span className="text-danger">{errors.subject.message}</span>}
               </div>
               {/* Grading settings prefill from the admin Grading Policy defaults */}
               <div className="col-md-3">

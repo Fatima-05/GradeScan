@@ -5,7 +5,7 @@ import { subjectAddController, subjectRemoveController, subjectGetController } f
 const router = express.Router();
 // Ye router define karta hai ki subject ka data kaise add, view aur remove hoga MongoDB database mei.
 
-router.get("/", authenticate, authorize("admin"), subjectGetController);
+router.get("/", authenticate, authorize("admin", "faculty"), subjectGetController);
 // Ye function database se saare subjects fetch karke frontend ko bhejega.
 
 router.post("/", authenticate, authorize("admin"), subjectAddController);

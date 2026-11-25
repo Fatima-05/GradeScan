@@ -5,7 +5,7 @@ import { classSectionAddController, classSectionRemoveController, classSectionGe
 const router = express.Router();
 // Ye router define karta hai ki class section ka data kaise add, view aur delete hoga MongoDB database mei.
 
-router.get("/", authenticate, authorize("admin"), classSectionGetController);
+router.get("/", authenticate, authorize("admin", "faculty"), classSectionGetController);
 // Ye function database se saare classes fetch karke frontend ko bhejega.
 
 router.post("/", authenticate, authorize("admin"), classSectionAddController);
